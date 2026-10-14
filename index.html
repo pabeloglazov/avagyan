@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Проверка полиса после ДТП</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Car Accident Policy Check — Avagyan Law</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Onest:wght@400;500;600;700;800&family=Arimo:wght@400;700&family=Noto+Sans+Armenian:wght@400;600;700;800&display=swap">
@@ -937,6 +937,10 @@ Object.assign(T.ru, { yours_h: "Ваш полис построчно", yours_sub
 Object.assign(T.uk, { yours_h: "Ваш поліс по рядках", yours_sub: "Ми перенесли ліміти з вашого поліса. Натисніть на рядок, щоб дізнатися, що він означає і чим допоможе після аварії.", doc_see: "див. у вашому документі" });
 Object.assign(T.en, { yours_h: "Your policy, line by line", yours_sub: "We copied the limits from your policy. Tap any line to see what it means and how it helps after an accident.", doc_see: "see your document" });
 Object.assign(T.es, { yours_h: "Su póliza, línea por línea", yours_sub: "Copiamos los límites de su póliza. Toque una línea para ver qué significa y cómo le ayuda después de un accidente.", doc_see: "ver su documento" });
+T.ru.page_title = "Проверка полиса после ДТП — Avagyan Law";
+T.uk.page_title = "Перевірка поліса після ДТП — Avagyan Law";
+T.en.page_title = "Car Accident Policy Check — Avagyan Law";
+T.es.page_title = "Revisión de póliza tras un accidente — Avagyan Law";
 
 /* Армянский (hy) */
 T.hy = {
@@ -1045,6 +1049,7 @@ T.hy = {
 Object.assign(T.hy, { ig_h: "Մինչ սպասում եք զանգին", ig_sub: "Մեր Instagram-ում վերլուծում ենք իրական վթարներ՝ ինչ անել վթարից հետո, ինչպես չզիջել ապահովագրողին և որ սխալներն են գումար արժենում։", ig_btn: "Բաժանորդագրվել @pabeloglazov_injury-ին" });
 Object.assign(T.hy, { f_ok: "Շուտով կզանգահարենք։ «Ինչ անել վթարից հետո» հուշագիրն արդեն հասանելի է ներբեռնման համար։", ig_btn: "Հետևել Instagram-ում" });
 Object.assign(T.hy, { yours_h: "Ձեր պոլիսը՝ տող առ տող", yours_sub: "Մենք տեղափոխեցինք սահմանաչափերը ձեր պոլիսից։ Սեղմեք տողի վրա՝ իմանալու, թե ինչ է այն նշանակում և ինչով կօգնի վթարից հետո։", doc_see: "տես ձեր փաստաթղթում" });
+T.hy.page_title = "Պոլիսի ստուգում վթարից հետո — Avagyan Law";
 
 const EXTRACT_PROMPT = `You are reading images of a US personal auto insurance policy document (ideally the Declarations Page). Extract the coverage limits exactly as printed. Do not guess: use null for anything not shown.
 
@@ -1203,6 +1208,7 @@ function renderPanel(){
 function renderStatic(){
   const t = L();
   document.documentElement.lang = S.lang;
+  if (t.page_title) document.title = t.page_title;
   document.querySelectorAll("[data-t]").forEach(el => { const v = t[el.dataset.t]; if (typeof v === "string") el.textContent = v; });
   document.querySelectorAll(".langs button").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === S.lang));
   $("pills").innerHTML = t.pills.map(p => `<span class="pill">${esc(p)}</span>`).join("");
@@ -1371,7 +1377,7 @@ function selectG(k, scroll){
   if (r){ r.focus({ preventScroll:true }); if (scroll) r.scrollIntoView({ behavior:smooth(), block:"center" }); }
 }
 document.addEventListener("click", e => {
-  const lb = e.target.closest("[data-lang]"); if (lb){ S.lang = lb.dataset.lang; lsSet("pc_lang", S.lang); if (!S.busy) setStatus(null); renderStatic(); return; }
+  const lb = e.target.closest("[data-lang]"); if (lb){ S.lang = lb.dataset.lang; if (!S.busy) setStatus(null); renderStatic(); return; }
   const row = e.target.closest(".row"); if (row){ selectG(row.dataset.g, false); return; }
   const gi = e.target.closest("[data-gi]"); if (gi){ S.g = gi.dataset.gi; S.gOpen = true; renderDoc(); const nb = document.querySelector(`[data-gi="${S.g}"]`); if (nb) nb.focus(); return; }
   const st = e.target.closest("[data-gstep]"); if (st){ const i = GKEYS.indexOf(S.g) + Number(st.dataset.gstep); if (GKEYS[i]){ S.g = GKEYS[i]; S.gOpen = true; renderDoc(); } return; }
@@ -1392,8 +1398,13 @@ $("giftbtn").addEventListener("click", downloadGift);
 $("fdate").addEventListener("click", e => { try { e.currentTarget.showPicker(); } catch (_) {} });
 
 (function(){
-  const saved = lsGet("pc_lang"), nav = (navigator.language || "ru").slice(0,2).toLowerCase(), h = (location.hash || "").slice(1);
-  S.lang = T[h] ? h : T[saved] ? saved : T[nav] ? nav : "ru";
+  /* по умолчанию английский; другой язык — только ссылкой #ru #uk #es #hy или кнопкой */
+  const h = (location.hash || "").slice(1);
+  S.lang = T[h] ? h : "en";
+  /* всегда открываемся с самого верха */
+  try { history.scrollRestoration = "manual"; } catch (e) {}
+  if (h && !T[h]) { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {} }
+  scrollTo(0, 0);
   if (matchMedia("(max-width:960px)").matches) S.gOpen = false;
   renderStatic();
 })();

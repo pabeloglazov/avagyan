@@ -271,6 +271,8 @@ form .btn{width:100%;margin-top:20px}
   .hero{gap:32px;padding-block:24px 48px}
   .side-col{display:none}
   .row[aria-expanded="true"]+.inline-exp{display:block}
+  .m-exp:not(:empty){display:block}
+  .m-exp{grid-column:1/-1}
   .inline-exp{grid-column:1/-1;margin:8px 0 12px;font-family:var(--f-b);background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:var(--r-md);padding:16px}
   .inline-exp .exp{margin-top:0}
   .why-list{grid-template-columns:1fr 1fr}
@@ -290,6 +292,7 @@ form .btn{width:100%;margin-top:20px}
   .doc{padding:16px 12px;font-size:13px}
   .d-head .ttl{text-align:left}
   .d-meta{grid-template-columns:1fr}
+  .d-meta>*{order:var(--o)}
   .d-cov{grid-template-columns:minmax(0,1fr) auto}
   .d-cov .hd:nth-child(3){display:none}
   .d-cov .row{grid-template-columns:24px minmax(0,1fr) auto}
@@ -1151,15 +1154,24 @@ function expHTML(k){
   const t = L(), [, what, after] = t.g[k];
   return `<div class="exp"><div><span class="lbl">${esc(t.what_is)}</span><p>${esc(what)}</p></div><div class="after"><span class="lbl">${esc(t.guide_after)}</span><p>${esc(after)}</p></div></div>`;
 }
-function rowHTML(r, i, isCov){
+function rowHTML(r, i, isCov, noExp){
   const [k, name, val, prem] = r, on = S.gOpen && S.g === k, t = L();
-  return `<button type="button" class="row" data-g="${k}" aria-expanded="${on}" title="${esc(t.g[k][0])}"><span class="num">${i+1}</span><span class="k">${esc(name)}</span><span class="v">${esc(val || "")}</span>${isCov ? `<span class="pr">${esc(prem)}</span>` : ""}</button><div class="inline-exp">${on ? expHTML(k) : ""}</div>`;
+  return `<button type="button" class="row" data-g="${k}" aria-expanded="${on}" title="${esc(t.g[k][0])}"><span class="num">${i+1}</span><span class="k">${esc(name)}</span><span class="v">${esc(val || "")}</span>${isCov ? `<span class="pr">${esc(prem)}</span>` : ""}</button>` + (noExp ? "" : `<div class="inline-exp">${on ? expHTML(k) : ""}</div>`);
+}
+function metaHTML(){
+  let out = "";
+  for (let i = 0; i < DOC.meta.length; i += 2){
+    const pair = DOC.meta.slice(i, i + 2);
+    pair.forEach((r, j) => { out += `<div class="m-cell" style="--o:${(i + j) * 2}">${rowHTML(r, i + j, false, true)}</div>`; });
+    pair.forEach((r, j) => { const on = S.gOpen && S.g === r[0]; out += `<div class="inline-exp m-exp" style="--o:${(i + j) * 2 + 1}">${on ? expHTML(r[0]) : ""}</div>`; });
+  }
+  return out;
 }
 function renderDoc(){
   const n0 = DOC.meta.length;
   $("doc").innerHTML =
     `<div class="d-head"><div class="ins">Sample Insurance Co.<small>P.O. Box 0000, Sacramento, CA</small></div><div class="ttl">Declarations Page<small>Policy Number: 0000-00-00-00</small></div></div>` +
-    `<div class="d-meta">${DOC.meta.map((r,i) => `<div>${rowHTML(r,i,false)}</div>`).join("")}</div>` +
+    `<div class="d-meta">${metaHTML()}</div>` +
     `<div class="d-cov"><div class="hd">Coverages</div><div class="hd">Limits / Deductibles</div><div class="hd">Premium</div>${DOC.cov.map((r,i) => rowHTML(r, n0+i, true)).join("")}</div>`;
   renderPanel();
 }

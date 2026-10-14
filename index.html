@@ -153,7 +153,7 @@ section{padding-block:72px}
 .ticket{grid-column:1/5;display:grid;grid-template-rows:2fr repeat(3,1fr);background:var(--band);color:var(--on-band);border:1px solid rgba(231,199,126,.2);border-radius:var(--r-lg);overflow:hidden;min-width:0}
 .tk-top{display:flex;flex-direction:column;justify-content:center;padding:16px 24px}
 .ticket .lbl{font-size:13.5px;color:var(--on-band-2)}
-.split{font-family:var(--f-d);font-weight:800;font-size:46px;line-height:1.05;color:var(--gold-lt);margin-top:8px;font-variant-numeric:tabular-nums;letter-spacing:-.02em;overflow-wrap:anywhere}
+.split{white-space:nowrap;font-family:var(--f-d);font-weight:800;font-size:46px;line-height:1.05;color:var(--gold-lt);margin-top:8px;font-variant-numeric:tabular-nums;letter-spacing:-.02em;overflow-wrap:anywhere}
 .split-key{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;font-size:12.5px;color:var(--on-band-2)}
 .tk{display:contents}
 .tk div{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px;padding:10px 24px;border-top:1px solid rgba(231,199,126,.22);font-size:14.5px}
@@ -1169,6 +1169,7 @@ function renderPolicy(){
   $("pbadge").textContent = S.isExample ? t.example_badge : t.yours_badge;
   $("exnote").hidden = !S.isExample;
   $("split").textContent = has(c.bi_pp) ? `${kshort(c.bi_pp)}/${kshort(c.bi_pa||c.bi_pp)}/${kshort(c.pd)}` : "—";
+  fitSplit();
   $("splitkey").innerHTML = [t.pp, t.pa, "PD"].map(x => `<span>${esc(x)}</span>`).join("");
   const per = [
     [t.insurer, c.insurer || "—"],
@@ -1189,6 +1190,12 @@ function renderPolicy(){
   $("cov").innerHTML = rows.map(([k,g,v]) => `<div class="cov-row"><span class="n"><span>${esc(t.cov[k])}</span><button type="button" class="q" data-goto="${g}" aria-label="${esc(t.what_is)}: ${esc(t.cov[k])}">?</button></span><span class="v ${v?"":"none"}">${esc(v || t.none)}</span></div>`).join("");
   $("warns").innerHTML = warnings(c).map(w => `<div class="warn"><b aria-hidden="true">!</b><span>${esc(w)}</span></div>`).join("");
 }
+function fitSplit(){
+  const el = $("split"); el.style.fontSize = "";
+  let fs = parseFloat(getComputedStyle(el).fontSize);
+  while (el.scrollWidth > el.clientWidth + 1 && fs > 22){ fs -= 2; el.style.fontSize = fs + "px"; }
+}
+addEventListener("resize", () => fitSplit());
 function renderScenario(){
   const t = L();
   $("items").innerHTML = buildScenario(S.cov, S.scen).map(({ key, st, p }) => {

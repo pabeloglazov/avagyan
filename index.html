@@ -216,7 +216,16 @@ form,.okbox{height:100%;border:1.5px solid var(--line);border-radius:var(--r-lg)
 .ferr:empty{display:none}
 form .btn{width:100%;margin-top:20px}
 .okbox{display:grid;align-content:center;gap:12px}
+.okbox .h2,.okbox>.sub{margin:0}
 .okbox .h2{font-size:28px}
+.ig{display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px 16px;align-items:start;margin-top:12px;padding:20px;border-radius:var(--r-md);background:var(--mist)}
+.ig-ico{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#F58529,#DD2A7B 55%,#8134AF)}
+.ig-ico svg{width:24px;height:24px}
+.ig h3{font-size:16.5px;font-weight:700;line-height:1.3}
+.ig p{color:var(--ink-2);font-size:14.5px;margin-top:6px}
+.ig-handle{display:block;font-size:13.5px;font-weight:600;color:var(--accent);margin-top:2px}
+.ig-btn{grid-column:1/-1;width:100%;padding:0 16px}
+@media (max-width:640px){.ig{padding:16px;gap:12px}.ig-ico{width:40px;height:40px;border-radius:12px}.ig{grid-template-columns:40px minmax(0,1fr)}}
 .gift{height:100%;display:grid;grid-template-rows:auto 1fr auto;align-content:start;gap:16px;background:var(--band);color:var(--on-band);border-radius:var(--r-lg);padding:24px}
 .gift .tag{justify-self:start;background:var(--gold-lt);color:#1F3A30;font-weight:700;font-size:13px;border-radius:999px;padding:3px 12px}
 .gift-cover{display:grid;place-items:center;min-height:240px;position:relative;background:var(--band-2);border-radius:var(--r-md);overflow:hidden;padding:20px}
@@ -429,7 +438,14 @@ form .btn{width:100%;margin-top:20px}
         <div class="ferr" id="ferr" role="alert"></div>
         <button class="btn btn-dark" id="fsubmit" type="submit" data-t="f_submit"></button>
       </form>
-      <div class="okbox" id="okbox" hidden><h2 class="h2" data-t="f_ok_h"></h2><p class="sub" data-t="f_ok"></p></div>
+      <div class="okbox" id="okbox" hidden>
+        <h2 class="h2" data-t="f_ok_h"></h2><p class="sub" data-t="f_ok"></p>
+        <div class="ig">
+          <span class="ig-ico" aria-hidden="true"><svg><use href="#i-ig"/></svg></span>
+          <div class="ig-txt"><h3 data-t="ig_h"></h3><span class="ig-handle">@pabeloglazov_injury</span><p data-t="ig_sub"></p></div>
+          <a class="btn btn-dark ig-btn" href="https://www.instagram.com/pabeloglazov_injury/" target="_blank" rel="noopener"><svg aria-hidden="true" style="width:18px;height:18px"><use href="#i-ig"/></svg><span data-t="ig_btn"></span></a>
+        </div>
+      </div>
     </div>
     <div class="gift-col">
       <aside class="gift" id="gift">
@@ -463,7 +479,7 @@ form .btn{width:100%;margin-top:20px}
         <h3 data-t="manager"></h3>
         <p class="role" data-t="write_me"></p>
         <ul class="clist">
-          <li><svg aria-hidden="true"><use href="#i-ig"/></svg><a href="https://www.instagram.com/pabeloglazov" target="_blank" rel="noopener">@pabeloglazov</a></li>
+          <li><svg aria-hidden="true"><use href="#i-ig"/></svg><a href="https://www.instagram.com/pabeloglazov_injury/" target="_blank" rel="noopener">@pabeloglazov_injury</a></li>
           <li><svg aria-hidden="true"><use href="#i-tg"/></svg><a href="https://t.me/pabeloglazov" target="_blank" rel="noopener">@pabeloglazov</a></li>
         </ul>
       </div>
@@ -917,6 +933,14 @@ Object.assign(T.uk, { site: "Сайт фірми", write_me: "Напишіть �
 Object.assign(T.en, { site: "Firm website", write_me: "Message me", office: "Office" });
 Object.assign(T.es, { site: "Sitio del bufete", write_me: "Escríbame", office: "Oficina" });
 T.ru.veh = "Машина"; T.uk.veh = "Авто"; T.en.veh = "Vehicle"; T.es.veh = "Vehículo";
+Object.assign(T.ru, { ig_h: "Пока ждёте звонка", ig_sub: "В нашем Instagram разбираем реальные ДТП: что делать после аварии, как не продешевить со страховой и какие ошибки стоят денег.", ig_btn: "Подписаться на @pabeloglazov_injury" });
+Object.assign(T.uk, { ig_h: "Поки чекаєте на дзвінок", ig_sub: "У нашому Instagram розбираємо реальні ДТП: що робити після аварії, як не продешевити зі страховою і які помилки коштують грошей.", ig_btn: "Підписатися на @pabeloglazov_injury" });
+Object.assign(T.en, { ig_h: "While you wait for our call", ig_sub: "On our Instagram we break down real accident cases: what to do after a crash, how not to sell yourself short with the insurer, and which mistakes cost money.", ig_btn: "Follow @pabeloglazov_injury" });
+Object.assign(T.es, { ig_h: "Mientras espera nuestra llamada", ig_sub: "En nuestro Instagram analizamos casos reales de accidentes: qué hacer después de un choque, cómo no conformarse con poco ante la aseguradora y qué errores cuestan dinero.", ig_btn: "Seguir a @pabeloglazov_injury" });
+Object.assign(T.ru, { f_ok: "Перезвоним в ближайшее время. Памятка «Что делать после ДТП» уже доступна для скачивания.", ig_btn: "Подписаться в Instagram" });
+Object.assign(T.uk, { f_ok: "Передзвонимо найближчим часом. Пам'ятка «Що робити після ДТП» вже доступна для завантаження.", ig_btn: "Підписатися в Instagram" });
+Object.assign(T.en, { f_ok: "We'll call you shortly. The after-accident checklist is now ready to download.", ig_btn: "Follow on Instagram" });
+Object.assign(T.es, { f_ok: "Le llamaremos pronto. La guía «Qué hacer después de un accidente» ya está disponible para descargar.", ig_btn: "Seguir en Instagram" });
 
 /* Армянский (hy) */
 T.hy = {
@@ -1022,6 +1046,8 @@ T.hy = {
   },
   site: "Ֆիրմայի կայքը", write_me: "Գրեք ինձ", office: "Գրասենյակ", veh: "Մեքենա"
 };
+Object.assign(T.hy, { ig_h: "Մինչ սպասում եք զանգին", ig_sub: "Մեր Instagram-ում վերլուծում ենք իրական վթարներ՝ ինչ անել վթարից հետո, ինչպես չզիջել ապահովագրողին և որ սխալներն են գումար արժենում։", ig_btn: "Բաժանորդագրվել @pabeloglazov_injury-ին" });
+Object.assign(T.hy, { f_ok: "Շուտով կզանգահարենք։ «Ինչ անել վթարից հետո» հուշագիրն արդեն հասանելի է ներբեռնման համար։", ig_btn: "Հետևել Instagram-ում" });
 
 const EXTRACT_PROMPT = `You are reading images of a US personal auto insurance policy document (ideally the Declarations Page). Extract the coverage limits exactly as printed. Do not guess: use null for anything not shown.
 

@@ -128,6 +128,12 @@ section{padding-block:72px}
 .row .v{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .row .pr{text-align:right;color:#5d665f;font-variant-numeric:tabular-nums}
 .inline-exp{display:none}
+.doc .v.nocov{color:#B03A2D;font-weight:600}
+.doc.noprem .d-cov{grid-template-columns:minmax(0,1fr) auto}
+.doc.noprem .d-cov .hd:nth-child(3),.doc.noprem .row .pr{display:none}
+.doc.noprem .d-cov .row{grid-template-columns:24px minmax(0,1fr) auto}
+.doc-tag.mine{display:inline-flex;margin-top:12px;background:var(--ok-bg);color:var(--ok);font-weight:700;border-radius:999px;padding:4px 12px}
+#guide .warns{margin:-8px 0 24px}
 .panel{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;border:1.5px solid var(--line);border-radius:var(--r-lg);padding:28px;background:var(--paper)}
 .gidx{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin:auto 0 0;padding:20px 0 0;border-top:1px solid var(--line);list-style:none}
 .gidx button{all:unset;box-sizing:border-box;display:grid;place-items:center;width:100%;aspect-ratio:1;max-width:40px;margin:0 auto;border-radius:50%;border:1.5px solid var(--line);cursor:pointer;font:700 13px/1 var(--f-b);color:var(--ink-2);font-variant-numeric:tabular-nums}
@@ -273,7 +279,9 @@ form .btn{width:100%;margin-top:20px}
   .row[aria-expanded="true"]+.inline-exp{display:block}
   .m-exp:not(:empty){display:block}
   .m-exp{grid-column:1/-1}
-  .inline-exp{grid-column:1/-1;margin:8px 0 12px;font-family:var(--f-b);background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:var(--r-md);padding:16px}
+  .inline-exp{grid-column:1/-1;margin:8px 0 12px;font-family:var(--f-b);background:#fff;color:#15231C;border:1.5px solid #DCE3DE;border-radius:var(--r-md);padding:16px}
+  .inline-exp .lbl{color:#51635A}
+  .inline-exp .after{background:#F1F4F2}
   .inline-exp .exp{margin-top:0}
   .why-list{grid-template-columns:1fr 1fr}
   .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -382,7 +390,8 @@ form .btn{width:100%;margin-top:20px}
 
 <section id="guide">
   <div class="wrap">
-    <div class="sec-head"><div><h2 class="h2" data-t="guide_h"></h2><p class="sub" data-t="guide_sub"></p><span class="doc-tag" data-t="guide_ex"></span></div></div>
+    <div class="sec-head"><div><h2 class="h2" id="guide_h"></h2><p class="sub" id="guide_sub"></p><span class="doc-tag" id="guide_tag"></span></div></div>
+    <div class="warns" id="warns"></div>
     <div class="guide-grid">
       <div class="doc-col">
         <div class="doc" id="doc"></div>
@@ -392,25 +401,6 @@ form .btn{width:100%;margin-top:20px}
   </div>
 </section>
 
-<section class="policy-sec" id="policy">
-  <div class="wrap">
-    <div class="sec-head"><div><h2 class="h2" data-t="policy_h"></h2><p class="sub" id="exnote" data-t="example_note"></p></div><span class="badge" id="pbadge"></span></div>
-    <div class="pol-grid">
-      <div class="ticket">
-        <div class="tk-top">
-          <div class="lbl" data-t="limits"></div>
-          <div class="split" id="split"></div>
-          <div class="split-key" id="splitkey"></div>
-        </div>
-        <dl class="tk" id="tk"></dl>
-      </div>
-      <div class="cov-wrap">
-        <div class="cov" id="cov"></div>
-      </div>
-      <div class="warns" id="warns"></div>
-    </div>
-  </div>
-</section>
 
 <section id="scenarios">
   <div class="wrap">
@@ -945,6 +935,10 @@ Object.assign(T.ru, { f_ok: "Перезвоним в ближайшее врем
 Object.assign(T.uk, { f_ok: "Передзвонимо найближчим часом. Пам'ятка «Що робити після ДТП» вже доступна для завантаження.", ig_btn: "Підписатися в Instagram" });
 Object.assign(T.en, { f_ok: "We'll call you shortly. The after-accident checklist is now ready to download.", ig_btn: "Follow on Instagram" });
 Object.assign(T.es, { f_ok: "Le llamaremos pronto. La guía «Qué hacer después de un accidente» ya está disponible para descargar.", ig_btn: "Seguir en Instagram" });
+Object.assign(T.ru, { yours_h: "Ваш полис построчно", yours_sub: "Мы перенесли лимиты из вашего полиса. Нажмите на строку, чтобы узнать, что она значит и чем поможет после аварии.", doc_see: "см. в вашем документе" });
+Object.assign(T.uk, { yours_h: "Ваш поліс по рядках", yours_sub: "Ми перенесли ліміти з вашого поліса. Натисніть на рядок, щоб дізнатися, що він означає і чим допоможе після аварії.", doc_see: "див. у вашому документі" });
+Object.assign(T.en, { yours_h: "Your policy, line by line", yours_sub: "We copied the limits from your policy. Tap any line to see what it means and how it helps after an accident.", doc_see: "see your document" });
+Object.assign(T.es, { yours_h: "Su póliza, línea por línea", yours_sub: "Copiamos los límites de su póliza. Toque una línea para ver qué significa y cómo le ayuda después de un accidente.", doc_see: "ver su documento" });
 
 /* Армянский (hy) */
 T.hy = {
@@ -1052,6 +1046,7 @@ T.hy = {
 };
 Object.assign(T.hy, { ig_h: "Մինչ սպասում եք զանգին", ig_sub: "Մեր Instagram-ում վերլուծում ենք իրական վթարներ՝ ինչ անել վթարից հետո, ինչպես չզիջել ապահովագրողին և որ սխալներն են գումար արժենում։", ig_btn: "Բաժանորդագրվել @pabeloglazov_injury-ին" });
 Object.assign(T.hy, { f_ok: "Շուտով կզանգահարենք։ «Ինչ անել վթարից հետո» հուշագիրն արդեն հասանելի է ներբեռնման համար։", ig_btn: "Հետևել Instagram-ում" });
+Object.assign(T.hy, { yours_h: "Ձեր պոլիսը՝ տող առ տող", yours_sub: "Մենք տեղափոխեցինք սահմանաչափերը ձեր պոլիսից։ Սեղմեք տողի վրա՝ իմանալու, թե ինչ է այն նշանակում և ինչով կօգնի վթարից հետո։", doc_see: "տես ձեր փաստաթղթում" });
 
 const EXTRACT_PROMPT = `You are reading images of a US personal auto insurance policy document (ideally the Declarations Page). Extract the coverage limits exactly as printed. Do not guess: use null for anything not shown.
 
@@ -1150,29 +1145,53 @@ const DOC = {
     ["rental","Rental Reimbursement","$30/day, $900 max","$18.00"], ["tow","Towing & Roadside","Included","$12.00"], ["premium","Total 6-Month Premium","","$873.30"] ]
 };
 const GKEYS = [...DOC.meta, ...DOC.cov].map(r => r[0]);
+/* данные документа: образец или загруженный полис клиента */
+function docData(){
+  if (S.isExample) return { head:["Sample Insurance Co.","P.O. Box 0000, Sacramento, CA","Policy Number: 0000-00-00-00"], meta:DOC.meta, cov:DOC.cov, prem:true };
+  const t = L(), c = S.cov, see = t.doc_see, no = null;
+  const d = s => { if (!s) return ""; const m = String(s).match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? `${m[2]}/${m[3]}/${m[1]}` : s; };
+  const pair = (a,b) => has(a) ? money(a) + (has(b) && b !== a ? " / " + money(b) : "") : no;
+  const ded = (on, x) => on ? (x != null ? money(x) + " Ded" : "Included") : no;
+  const period = [d(c.period_start), d(c.period_end)].filter(Boolean).join(" – ");
+  return {
+    head:[c.insurer || "—", "", ""],
+    meta:[ ["period","Policy Period", period || see], ["named","Named Insured", see], ["vehicle","Vehicle 1", (c.vehicles && c.vehicles[0]) || see], ["lien","Lienholder", see] ],
+    cov:[ ["bi","Bodily Injury Liability", pair(c.bi_pp,c.bi_pa)], ["pd","Property Damage Liability", has(c.pd) ? money(c.pd) : no],
+      ["um","Uninsured / Underinsured Motorists", pair(c.um_pp,c.um_pa)], ["umpd","Uninsured Motorists Property Damage", has(c.umpd) ? money(c.umpd) : no],
+      ["medpay","Medical Payments", has(c.medpay) ? money(c.medpay) : no], ["coll","Collision", ded(c.collision, c.collision_ded)], ["comp","Comprehensive", ded(c.comprehensive, c.comprehensive_ded)],
+      ["rental","Rental Reimbursement", has(c.rental_day) ? money(c.rental_day) + "/day" + (has(c.rental_max) ? ", " + money(c.rental_max) + " max" : "") : (c.rental ? "Included" : no)],
+      ["tow","Towing & Roadside", c.towing ? "Included" : no], ["premium","Total Premium", see] ],
+    prem:false
+  };
+}
 function expHTML(k){
   const t = L(), [, what, after] = t.g[k];
   return `<div class="exp"><div><span class="lbl">${esc(t.what_is)}</span><p>${esc(what)}</p></div><div class="after"><span class="lbl">${esc(t.guide_after)}</span><p>${esc(after)}</p></div></div>`;
 }
 function rowHTML(r, i, isCov, noExp){
   const [k, name, val, prem] = r, on = S.gOpen && S.g === k, t = L();
-  return `<button type="button" class="row" data-g="${k}" aria-expanded="${on}" title="${esc(t.g[k][0])}"><span class="num">${i+1}</span><span class="k">${esc(name)}</span><span class="v">${esc(val || "")}</span>${isCov ? `<span class="pr">${esc(prem)}</span>` : ""}</button>` + (noExp ? "" : `<div class="inline-exp">${on ? expHTML(k) : ""}</div>`);
+  return `<button type="button" class="row" data-g="${k}" aria-expanded="${on}" title="${esc(t.g[k][0])}"><span class="num">${i+1}</span><span class="k">${esc(name)}</span><span class="v${val === null ? " nocov" : ""}">${esc(val === null ? L().none : (val || ""))}</span>${isCov ? `<span class="pr">${esc(prem)}</span>` : ""}</button>` + (noExp ? "" : `<div class="inline-exp">${on ? expHTML(k) : ""}</div>`);
 }
-function metaHTML(){
+function metaHTML(meta){
   let out = "";
-  for (let i = 0; i < DOC.meta.length; i += 2){
-    const pair = DOC.meta.slice(i, i + 2);
+  for (let i = 0; i < meta.length; i += 2){
+    const pair = meta.slice(i, i + 2);
     pair.forEach((r, j) => { out += `<div class="m-cell" style="--o:${(i + j) * 2}">${rowHTML(r, i + j, false, true)}</div>`; });
     pair.forEach((r, j) => { const on = S.gOpen && S.g === r[0]; out += `<div class="inline-exp m-exp" style="--o:${(i + j) * 2 + 1}">${on ? expHTML(r[0]) : ""}</div>`; });
   }
   return out;
 }
 function renderDoc(){
-  const n0 = DOC.meta.length;
+  const t = L(), D = docData(), n0 = D.meta.length;
+  $("guide_h").textContent = S.isExample ? t.guide_h : t.yours_h;
+  $("guide_sub").textContent = S.isExample ? t.guide_sub : t.yours_sub;
+  $("guide_tag").textContent = S.isExample ? t.guide_ex : t.yours_badge;
+  $("guide_tag").className = "doc-tag" + (S.isExample ? "" : " mine");
+  $("doc").classList.toggle("noprem", !D.prem);
   $("doc").innerHTML =
-    `<div class="d-head"><div class="ins">Sample Insurance Co.<small>P.O. Box 0000, Sacramento, CA</small></div><div class="ttl">Declarations Page<small>Policy Number: 0000-00-00-00</small></div></div>` +
-    `<div class="d-meta">${metaHTML()}</div>` +
-    `<div class="d-cov"><div class="hd">Coverages</div><div class="hd">Limits / Deductibles</div><div class="hd">Premium</div>${DOC.cov.map((r,i) => rowHTML(r, n0+i, true)).join("")}</div>`;
+    `<div class="d-head"><div class="ins">${esc(D.head[0])}${D.head[1] ? `<small>${esc(D.head[1])}</small>` : ""}</div><div class="ttl">Declarations Page${D.head[2] ? `<small>${esc(D.head[2])}</small>` : ""}</div></div>` +
+    `<div class="d-meta">${metaHTML(D.meta)}</div>` +
+    `<div class="d-cov"><div class="hd">Coverages</div><div class="hd">Limits / Deductibles</div><div class="hd">Premium</div>${D.cov.map((r,i) => rowHTML(r, n0+i, true)).join("")}</div>`;
   renderPanel();
 }
 function renderPanel(){
@@ -1203,38 +1222,8 @@ function renderStatic(){
   renderDoc(); renderPolicy(); renderScenario(); renderFiles();
 }
 function renderPolicy(){
-  const t = L(), c = S.cov;
-  $("pbadge").className = "badge " + (S.isExample ? "ex" : "mine");
-  $("pbadge").textContent = S.isExample ? t.example_badge : t.yours_badge;
-  $("exnote").hidden = !S.isExample;
-  $("split").textContent = has(c.bi_pp) ? `${kshort(c.bi_pp)}/${kshort(c.bi_pa||c.bi_pp)}/${kshort(c.pd)}` : "—";
-  fitSplit();
-  $("splitkey").innerHTML = [t.pp, t.pa, "PD"].map(x => `<span>${esc(x)}</span>`).join("");
-  const per = [
-    [t.insurer, c.insurer || "—"],
-    [t.period, [c.period_start, c.period_end].filter(Boolean).join(" → ") || "—"],
-    [t.veh, (c.vehicles && c.vehicles.length) ? c.vehicles.join(", ") : "—"]
-  ];
-  $("tk").innerHTML = per.map(([a,b]) => `<div><dt>${esc(a)}</dt><dd>${esc(b)}</dd></div>`).join("");
-  const pair = (a,b) => has(a) ? money(a) + (has(b) && b !== a ? " / " + money(b) : "") : null;
-  const ded = d => d == null ? null : t.ded + " " + money(d);
-  const rows = [
-    ["bi","bi",pair(c.bi_pp,c.bi_pa)], ["pd","pd",has(c.pd)?money(c.pd):null],
-    ["um","um",pair(c.um_pp,c.um_pa)], ["uim","um",pair(c.uim_pp ?? c.um_pp, c.uim_pa ?? c.um_pa)],
-    ["umpd","umpd",has(c.umpd)?money(c.umpd):null], ["medpay","medpay",has(c.medpay)?money(c.medpay):null],
-    ["coll","coll",c.collision ? (ded(c.collision_ded) || t.yes) : null], ["comp","comp",c.comprehensive ? (ded(c.comprehensive_ded) || t.yes) : null],
-    ["rental","rental",has(c.rental_day) ? money(c.rental_day)+" "+t.pd_short+(has(c.rental_max)?" · "+money(c.rental_max):"") : (c.rental ? t.yes : null)],
-    ["tow","tow",c.towing ? t.yes : null]
-  ];
-  $("cov").innerHTML = rows.map(([k,g,v]) => `<div class="cov-row"><span class="n"><span>${esc(t.cov[k])}</span><button type="button" class="q" data-goto="${g}" aria-label="${esc(t.what_is)}: ${esc(t.cov[k])}">?</button></span><span class="v ${v?"":"none"}">${esc(v || t.none)}</span></div>`).join("");
-  $("warns").innerHTML = warnings(c).map(w => `<div class="warn"><b aria-hidden="true">!</b><span>${esc(w)}</span></div>`).join("");
+  $("warns").innerHTML = S.isExample ? "" : warnings(S.cov).map(w => `<div class="warn"><b aria-hidden="true">!</b><span>${esc(w)}</span></div>`).join("");
 }
-function fitSplit(){
-  const el = $("split"); el.style.fontSize = "";
-  let fs = parseFloat(getComputedStyle(el).fontSize);
-  while (el.scrollWidth > el.clientWidth + 1 && fs > 22){ fs -= 2; el.style.fontSize = fs + "px"; }
-}
-addEventListener("resize", () => fitSplit());
 function renderScenario(){
   const t = L();
   $("items").innerHTML = buildScenario(S.cov, S.scen).map(({ key, st, p }) => {
@@ -1320,8 +1309,8 @@ async function analyze(){
     if (!d) throw { code:"ai" };
     if (d.is_dec_page === false) throw { code:"notdec" };
     S.cov = normalize(d); S.isExample = false;
-    setStatus(null); renderPolicy(); renderScenario();
-    $("policy").scrollIntoView({ behavior:smooth() });
+    setStatus(null); S.g = "bi"; S.gOpen = !matchMedia("(max-width:960px)").matches; renderDoc(); renderPolicy(); renderScenario();
+    $("guide").scrollIntoView({ behavior:smooth() });
   } catch (e){
     const map = { file:"err_file", notdec:"err_notdec", noai:"err_noai", not_granted:"err_denied" };
     setStatus("err", L()[map[e && e.code] || "err_ai"]);

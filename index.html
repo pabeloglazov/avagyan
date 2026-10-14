@@ -202,7 +202,8 @@ form,.okbox{height:100%;border:1.5px solid var(--line);border-radius:var(--r-lg)
 .f label,.f .lg{font-size:13.5px;font-weight:600;color:var(--ink-2)}
 .f input,.f select{display:block;width:100%;min-width:0;max-width:100%;-webkit-appearance:none;appearance:none;height:50px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--paper);padding:0 14px}
 .f select{background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 15px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:36px}
-.f input[type="date"]{line-height:50px}
+.f input[type="date"]{line-height:50px;cursor:pointer}
+.f input[type="date"]::-webkit-calendar-picker-indicator{cursor:pointer}
 .f input:focus,.f select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,169,97,.35)}
 .seg{display:grid;gap:8px}
 .seg.s4{grid-template-columns:repeat(2,minmax(0,1fr))} .seg.s3{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -1381,6 +1382,8 @@ drop.addEventListener("drop", e => addFiles(e.dataTransfer.files));
 $("go").addEventListener("click", analyze);
 $("form").addEventListener("submit", submitLead);
 $("giftbtn").addEventListener("click", downloadGift);
+/* дата аварии: календарь открывается по клику в любом месте поля */
+$("fdate").addEventListener("click", e => { try { e.currentTarget.showPicker(); } catch (_) {} });
 
 (function(){
   const saved = lsGet("pc_lang"), nav = (navigator.language || "ru").slice(0,2).toLowerCase(), h = (location.hash || "").slice(1);

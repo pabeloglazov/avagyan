@@ -1,0 +1,1359 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Проверка полиса после ДТП</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Onest:wght@400;500;600;700;800&family=Arimo:wght@400;700&family=Noto+Sans+Armenian:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: зелёная шапка с героем и загрузкой → «бумажный» declaration page с номерами-подсказками → разбор полиса → сценарии → заявка + подарок → почему мы + контакты.
+   Сетка: контейнер 1160px, 12 колонок, шаг отступов 8/16/24/32/48/72. Всё выровнено по левому краю. */
+:root{
+  --band:#1F3A30; --band-2:#2A4A3D; --on-band:#F4F1E8; --on-band-2:#B7C6BC; --gold:#C9A961; --gold-lt:#E7C77E;
+  --paper:#FFFFFF; --sheet:#FCFCF9; --mist:#F1F4F2; --ink:#15231C; --ink-2:#51635A; --line:#DCE3DE; --accent:#1F3A30; --mark:#A47A26;
+  --ok:#1D7A4B; --ok-bg:#E4F2E9; --part:#946100; --part-bg:#FBEFD3; --no:#B03A2D; --no-bg:#FAE6E2; --info:#2C5985; --info-bg:#E7EEF6;
+  --f-d:"Unbounded","Noto Sans Armenian","Onest",system-ui,sans-serif; --f-b:"Onest","Noto Sans Armenian",system-ui,-apple-system,"Segoe UI",sans-serif; --f-doc:"Arimo",Arial,Helvetica,sans-serif;
+  --r-lg:24px; --r-md:16px; --r-sm:12px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --band:#14271F; --band-2:#1D3529; --on-band:#F4F1E8; --on-band-2:#A8B9AE;
+  --paper:#0F1813; --sheet:#F6F5EF; --mist:#16231C; --ink:#E7EDE9; --ink-2:#A4B4AA; --line:#2B3C33; --accent:#A8D3B9; --mark:#E2BE6C;
+  --ok:#72CF9A; --ok-bg:#163021; --part:#EDB24E; --part-bg:#33270F; --no:#EF8B7D; --no-bg:#371A16; --info:#90B9E3; --info-bg:#172535; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --band:#14271F; --band-2:#1D3529; --on-band:#F4F1E8; --on-band-2:#A8B9AE;
+  --paper:#0F1813; --sheet:#F6F5EF; --mist:#16231C; --ink:#E7EDE9; --ink-2:#A4B4AA; --line:#2B3C33; --accent:#A8D3B9; --mark:#E2BE6C;
+  --ok:#72CF9A; --ok-bg:#163021; --part:#EDB24E; --part-bg:#33270F; --no:#EF8B7D; --no-bg:#371A16; --info:#90B9E3; --info-bg:#172535; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font:16px/1.55 var(--f-b);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{margin:0;text-wrap:balance} p{margin:0}
+button,input,select{font:inherit;color:inherit}
+a{color:inherit}
+svg{display:block}
+:focus-visible{outline:3px solid var(--gold-lt);outline-offset:2px}
+.h2{font-family:var(--f-d);font-weight:800;font-size:clamp(24px,3vw,34px);line-height:1.15;letter-spacing:-.01em;color:var(--accent)}
+.sub{color:var(--ink-2);max-width:62ch;margin-top:12px}
+section{padding-block:72px}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 24px;flex-wrap:wrap;margin-bottom:32px}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border:0;border-radius:999px;padding:0 24px;font-weight:700;font-size:15px;cursor:pointer;text-decoration:none;text-align:center;line-height:1.2}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn-dark{background:var(--band);color:var(--on-band)}
+.btn-gold{background:var(--gold-lt);color:#1F3A30}
+.btn-line{background:transparent;border:1.5px solid currentColor}
+
+/* иконки соцсетей */
+.soc{display:flex;gap:8px}
+.soc a{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;border:1.5px solid rgba(231,199,126,.5);color:var(--gold-lt);text-decoration:none}
+.soc a:hover{background:rgba(231,199,126,.12)}
+.soc svg{width:19px;height:19px}
+
+/* шапка */
+.band{background:var(--band);color:var(--on-band)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:20px}
+.logo{height:44px;width:auto;display:block}
+.top-r{display:flex;align-items:center;gap:16px}
+.langs{display:flex;gap:2px;border:1.5px solid rgba(231,199,126,.4);border-radius:999px;padding:3px}
+.langs button{border:0;background:none;color:var(--on-band-2);font-weight:700;font-size:13px;min-width:40px;height:32px;border-radius:999px;cursor:pointer}
+.langs button[aria-pressed="true"]{background:var(--gold-lt);color:#1F3A30}
+.tel-top{font-weight:700;color:var(--gold-lt);text-decoration:none;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* герой */
+.hero{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;padding-block:40px 72px;align-items:start}
+.hero-txt{grid-column:1/8;padding-top:8px}
+.hero-up{grid-column:8/13}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.pill{border:1.5px solid rgba(231,199,126,.55);color:var(--gold-lt);border-radius:999px;padding:4px 14px;font-size:13.5px;font-weight:600}
+.hero h1{font-family:var(--f-d);font-weight:800;font-size:clamp(32px,4.6vw,56px);line-height:1.06;letter-spacing:-.015em;max-width:15ch}
+.lead{margin-top:24px;color:var(--on-band-2);font-size:17.5px;max-width:52ch}
+.mgr{margin-top:32px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.mgr-txt{display:flex;align-items:center;gap:12px;font-size:14.5px;color:var(--on-band-2)}
+.mgr strong{color:var(--on-band)}
+.live{width:10px;height:10px;border-radius:50%;background:#5BCB8E;box-shadow:0 0 0 4px rgba(91,203,142,.2);flex:none}
+
+/* загрузка */
+.up{background:var(--paper);color:var(--ink);border-radius:var(--r-lg);padding:24px;box-shadow:0 30px 60px -30px rgba(0,0,0,.55)}
+.up h2{font-family:var(--f-d);font-weight:600;font-size:20px;line-height:1.25}
+.up .hint{color:var(--ink-2);font-size:14.5px;margin-top:8px}
+.drop{margin-top:16px;display:grid;justify-items:center;gap:12px;border:2px dashed var(--line);border-radius:var(--r-md);padding:24px 16px;cursor:pointer;text-align:center;transition:border-color .15s,background-color .15s}
+.drop.over{border-color:var(--gold);background:var(--mist)}
+.drop .or{font-size:13.5px;color:var(--ink-2)}
+.sheet-ico{width:44px;height:56px;border-radius:5px;background:var(--sheet);border:1.5px solid #9DB0A5;position:relative}
+.sheet-ico i{position:absolute;left:8px;right:8px;height:3px;border-radius:2px;background:#9DB0A5}
+.sheet-ico i:nth-child(1){top:10px;right:18px;background:#1F3A30}.sheet-ico i:nth-child(2){top:19px}.sheet-ico i:nth-child(3){top:27px}.sheet-ico i:nth-child(4){top:35px;background:var(--gold)}.sheet-ico i:nth-child(5){top:43px;right:20px}
+.files{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.files:empty{display:none}
+.chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;background:var(--mist);border-radius:999px;padding:4px 4px 4px 12px;font-size:13.5px}
+.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:210px}
+.chip button{flex:none;width:26px;height:26px;border:0;border-radius:50%;background:var(--line);cursor:pointer;font-size:15px;line-height:1}
+.go{width:100%;margin-top:16px}
+.status{margin-top:12px;border-radius:var(--r-sm);padding:12px 14px;font-size:14px;display:flex;gap:10px;align-items:center}
+.status.busy{background:var(--mist)} .status.err{background:var(--no-bg);color:var(--no)}
+.spin{flex:none;width:16px;height:16px;border-radius:50%;border:2.5px solid var(--line);border-top-color:var(--accent);animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.which{margin-top:16px;border-top:1px solid var(--line);padding-top:4px}
+.which summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;font-weight:700;font-size:15px}
+.which summary::-webkit-details-marker{display:none}
+.which summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:rotate(45deg);margin-right:4px;transition:transform .15s}
+.which[open] summary::after{transform:rotate(-135deg)}
+.which ul{margin:4px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+.which li{display:grid;grid-template-columns:20px 1fr;gap:8px;font-size:14.5px;color:var(--ink-2)}
+.which li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--gold);margin:8px 0 0 4px}
+.which a{display:inline-block;margin-top:12px;font-weight:700;color:var(--accent);text-underline-offset:3px}
+.priv{margin-top:12px;font-size:13px;color:var(--ink-2)}
+
+/* как читать declaration page */
+.guide-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:stretch}
+.doc-col{grid-column:1/8;min-width:0}
+.side-col{grid-column:8/13;min-width:0;position:relative}
+.doc{background:var(--sheet);color:#1d2420;font-family:var(--f-doc);font-size:13.5px;line-height:1.4;border-radius:6px;box-shadow:0 1px 0 #d9ddd8,0 18px 40px -22px rgba(20,35,28,.45);padding:28px;border:1px solid #e3e6e1}
+.doc-tag{display:inline-block;margin-top:8px;font-size:13.5px;color:var(--ink-2)}
+.d-head{display:flex;justify-content:space-between;gap:16px;padding-bottom:14px;border-bottom:2px solid #1d2420;flex-wrap:wrap}
+.d-head .ins{font-weight:700;font-size:15px}
+.d-head .ttl{font-weight:700;font-size:20px;text-align:right}
+.d-head small{display:block;color:#5d665f;font-weight:400;font-size:12px}
+.d-meta{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+.d-cov{display:grid;grid-template-columns:minmax(0,1fr) auto 64px;gap:0 12px}
+.d-cov .hd{font-weight:700;font-size:12px;color:#5d665f;padding:14px 0 6px;border-bottom:1px solid #c9cec8}
+.d-cov .hd:nth-child(n+2){text-align:right}
+.row{all:unset;box-sizing:border-box;display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;min-height:44px;padding:8px 8px 8px 4px;border-bottom:1px dotted #c9cec8;cursor:pointer;border-radius:4px}
+.d-cov .row{grid-column:1/-1;grid-template-columns:24px minmax(0,1fr) auto 64px}
+.d-meta .row{grid-template-columns:24px minmax(0,1fr)}
+.d-meta .row .v{grid-column:2;text-align:left;white-space:normal;color:#3c4540}
+.row:hover{background:#eef2ec}
+.row[aria-expanded="true"]{background:#f6ecd2}
+.row:focus-visible{outline:3px solid var(--gold);outline-offset:0}
+.num{width:24px;height:24px;border-radius:50%;background:#1F3A30;color:#F4F1E8;font:700 12px/24px var(--f-b);text-align:center;font-variant-numeric:tabular-nums}
+.row[aria-expanded="true"] .num{background:#A47A26}
+.row .k{font-weight:700;min-width:0}
+.row .v{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.row .pr{text-align:right;color:#5d665f;font-variant-numeric:tabular-nums}
+.inline-exp{display:none}
+.panel{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;border:1.5px solid var(--line);border-radius:var(--r-lg);padding:28px;background:var(--paper)}
+.gidx{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin:auto 0 0;padding:20px 0 0;border-top:1px solid var(--line);list-style:none}
+.gidx button{all:unset;box-sizing:border-box;display:grid;place-items:center;width:100%;aspect-ratio:1;max-width:40px;margin:0 auto;border-radius:50%;border:1.5px solid var(--line);cursor:pointer;font:700 13px/1 var(--f-b);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.gidx button:hover{border-color:var(--accent);color:var(--accent)}
+.gidx button:focus-visible{outline:3px solid var(--gold-lt)}
+.gidx button[aria-current="true"]{background:#A47A26;border-color:#A47A26;color:#fff}
+.pn{display:flex;align-items:center;gap:12px}
+.pn .num{flex:none;width:32px;height:32px;line-height:32px;font-size:14px;background:#A47A26}
+.panel h3{font-family:var(--f-d);font-weight:600;font-size:19px;line-height:1.3;color:var(--accent)}
+.exp{display:grid;gap:12px;margin-top:16px}
+.exp .lbl{display:block;font-size:13px;font-weight:700;color:var(--ink-2);margin-bottom:4px}
+.exp p{font-size:15.5px}
+.exp .after{background:var(--mist);border-radius:var(--r-sm);padding:14px 16px}
+.panel-nav{display:flex;justify-content:space-between;gap:12px;margin-top:16px}
+.panel-nav .btn{min-height:44px;width:56px;padding:0;color:var(--ink)}
+
+/* разбор полиса */
+.policy-sec{background:var(--mist)}
+.badge{display:inline-flex;align-items:center;min-height:30px;border-radius:999px;padding:0 14px;font-size:13.5px;font-weight:700}
+.badge.ex{border:1.5px dashed var(--mark);color:var(--mark)}
+.badge.mine{background:var(--ok-bg);color:var(--ok)}
+.pol-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:stretch}
+.ticket{grid-column:1/5;display:grid;grid-template-rows:2fr repeat(3,1fr);background:var(--band);color:var(--on-band);border:1px solid rgba(231,199,126,.2);border-radius:var(--r-lg);overflow:hidden;min-width:0}
+.tk-top{display:flex;flex-direction:column;justify-content:center;padding:16px 24px}
+.ticket .lbl{font-size:13.5px;color:var(--on-band-2)}
+.split{font-family:var(--f-d);font-weight:800;font-size:46px;line-height:1.05;color:var(--gold-lt);margin-top:8px;font-variant-numeric:tabular-nums;letter-spacing:-.02em;overflow-wrap:anywhere}
+.split-key{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;font-size:12.5px;color:var(--on-band-2)}
+.tk{display:contents}
+.tk div{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px;padding:10px 24px;border-top:1px solid rgba(231,199,126,.22);font-size:14.5px}
+.tk dt{color:var(--on-band-2)} .tk dd{margin:0;text-align:right;font-weight:600;overflow-wrap:anywhere}
+.cov-wrap{grid-column:5/13;min-width:0;display:flex}
+.cov{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:1fr;background:var(--paper);border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line)}
+.cov-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;min-height:64px;padding:10px 16px 10px 18px;border-bottom:1px solid var(--line)}
+.cov-row:nth-child(odd){border-right:1px solid var(--line)}
+.cov-row:nth-last-child(-n+2){border-bottom:0}
+.cov-row .n{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-2);min-width:0}
+.q{flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line);background:none;color:var(--ink-2);font:700 12px/1 var(--f-b);cursor:pointer;display:inline-grid;place-items:center}
+.q:hover{border-color:var(--accent);color:var(--accent)}
+.cov-row .v{font-weight:700;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cov-row .v.none{color:var(--no);font-weight:600}
+.warns{display:grid;gap:8px;margin-top:16px;grid-column:1/-1}
+.warns:empty{display:none}
+.warn{display:grid;grid-template-columns:24px 1fr;gap:10px;background:var(--part-bg);border-radius:var(--r-sm);padding:12px 16px;font-size:14.5px}
+.warn b{width:24px;height:24px;border-radius:50%;background:var(--part);color:var(--paper);display:grid;place-items:center;font-size:13px}
+
+/* сценарии */
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:24px}
+.tab{min-height:56px;padding:8px 14px;border-radius:var(--r-md);border:1.5px solid var(--line);background:var(--paper);color:var(--ink);font-weight:700;font-size:14.5px;line-height:1.25;cursor:pointer;text-align:left}
+.tab[aria-selected="true"]{background:var(--band);border-color:var(--band);color:var(--on-band)}
+.items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.item{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"st st" "h a" "p p";gap:8px 16px;align-content:start;background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);padding:20px 20px 20px 24px;position:relative;overflow:hidden}
+.item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--line)}
+.item.ok::before{background:var(--ok)} .item.part::before{background:var(--part)} .item.no::before{background:var(--no)} .item.info::before{background:var(--info)}
+.st{grid-area:st;justify-self:start;border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:700}
+.st.ok{background:var(--ok-bg);color:var(--ok)} .st.part{background:var(--part-bg);color:var(--part)} .st.no{background:var(--no-bg);color:var(--no)} .st.info{background:var(--info-bg);color:var(--info)}
+.item h3{grid-area:h;font-size:16.5px;line-height:1.3;font-weight:700}
+.item .amt{grid-area:a;font-family:var(--f-d);font-weight:600;font-size:17px;color:var(--accent);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.item p{grid-area:p;color:var(--ink-2);font-size:14.5px}
+.cta{margin-top:24px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:16px 24px;background:var(--band);color:var(--on-band);border-radius:var(--r-lg);padding:24px}
+.cta p{color:var(--on-band-2);max-width:58ch}
+.cta .acts{display:flex;gap:8px;flex-wrap:wrap}
+.cta .btn-line{color:var(--on-band);border-color:rgba(231,199,126,.55)}
+
+/* заявка */
+.lead-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:stretch}
+.form-col{grid-column:1/8;min-width:0}
+.gift-col{grid-column:8/13;min-width:0}
+form,.okbox{height:100%;border:1.5px solid var(--line);border-radius:var(--r-lg);padding:32px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
+.f{display:grid;gap:6px;align-content:start;min-width:0}
+.f.full{grid-column:1/-1}
+.f label,.f .lg{font-size:13.5px;font-weight:600;color:var(--ink-2)}
+.f input,.f select{display:block;width:100%;min-width:0;max-width:100%;-webkit-appearance:none;appearance:none;height:50px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--paper);padding:0 14px}
+.f select{background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 15px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:36px}
+.f input[type="date"]{line-height:50px}
+.f input:focus,.f select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,169,97,.35)}
+.seg{display:grid;gap:8px}
+.seg.s4{grid-template-columns:repeat(2,minmax(0,1fr))} .seg.s3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.seg label{position:relative;display:flex;align-items:center;min-height:46px;padding:8px 14px;border:1.5px solid var(--line);border-radius:var(--r-sm);font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;line-height:1.25}
+.seg input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.seg label:has(input:checked){background:var(--band);border-color:var(--band);color:var(--on-band)}
+.seg label:has(input:focus-visible){outline:3px solid var(--gold-lt)}
+.consent{display:grid;grid-template-columns:22px 1fr;gap:10px;margin-top:20px;font-size:14px;color:var(--ink-2);cursor:pointer}
+.consent input{width:20px;height:20px;margin:1px 0 0;accent-color:#1F3A30}
+.ferr{color:var(--no);font-size:14px;margin-top:12px}
+.ferr:empty{display:none}
+form .btn{width:100%;margin-top:20px}
+.okbox{display:grid;align-content:center;gap:12px}
+.okbox .h2{font-size:28px}
+.gift{height:100%;display:grid;grid-template-rows:auto 1fr auto;align-content:start;gap:16px;background:var(--band);color:var(--on-band);border-radius:var(--r-lg);padding:24px}
+.gift .tag{justify-self:start;background:var(--gold-lt);color:#1F3A30;font-weight:700;font-size:13px;border-radius:999px;padding:3px 12px}
+.gift-cover{display:grid;place-items:center;min-height:240px;position:relative;background:var(--band-2);border-radius:var(--r-md);overflow:hidden;padding:20px}
+.gift-cover img{height:280px;width:auto;max-width:none;border-radius:4px;box-shadow:0 16px 30px -10px rgba(0,0,0,.6);transform:rotate(-3deg)}
+.lock{position:absolute;right:12px;bottom:12px;background:rgba(0,0,0,.5);color:#F4F1E8;font-size:12.5px;border-radius:999px;padding:4px 10px}
+.gift h3{font-family:var(--f-d);font-weight:600;font-size:19px;line-height:1.3;color:var(--gold-lt)}
+.gift p{color:var(--on-band-2);font-size:14.5px;margin-top:8px}
+.gift .btn{width:100%}
+.gift .btn[disabled]{background:var(--band-2);color:var(--on-band-2);opacity:1}
+.gift-msg{font-size:13.5px;color:var(--on-band-2)}
+.gift-msg:empty{display:none}
+
+/* почему мы — стиль PI-креативов: капс курсивом; контакты в той же зелёной полосе */
+.why{background:var(--band);color:var(--on-band);padding-bottom:0}
+.why .h2{color:var(--gold-lt)}
+.why-list{list-style:none;margin:32px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 24px}
+.why-list li{display:grid;grid-template-columns:14px 1fr;gap:12px;font-weight:800;font-style:italic;text-transform:uppercase;font-size:15px;line-height:1.35;letter-spacing:.01em}
+.why-list li::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--gold-lt);margin-top:5px}
+.foot{margin-top:56px;padding-block:40px 48px;border-top:1px solid rgba(231,199,126,.25);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:32px 24px}
+.foot-firm{grid-column:1/6}
+.foot-me{grid-column:6/9}
+.foot-disc{grid-column:9/13;font-size:13px;color:var(--on-band-2)}
+.foot .logo{height:40px;margin-bottom:20px}
+.foot h3{font-size:15px;font-weight:700;color:var(--on-band);margin-bottom:12px}
+.clist{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+.clist li{display:grid;grid-template-columns:20px 1fr;gap:12px;align-items:start;font-size:15px;color:var(--on-band)}
+.clist svg{width:18px;height:18px;margin-top:2px;color:var(--gold-lt)}
+.clist a{text-decoration:none}
+.clist a:hover{text-decoration:underline;text-underline-offset:3px}
+.copy{margin-left:8px;border:1.5px solid rgba(231,199,126,.45);background:none;border-radius:999px;padding:1px 10px;font-size:12.5px;color:var(--on-band-2);cursor:pointer;vertical-align:1px}
+.foot-me .role{font-size:14px;color:var(--on-band-2);margin:-6px 0 14px}
+
+/* мобильная панель звонка */
+.mbar{display:none}
+
+@media (max-width:960px){
+  .hero,.guide-grid,.pol-grid,.lead-grid{grid-template-columns:minmax(0,1fr)}
+  .hero-txt,.hero-up,.doc-col,.side-col,.ticket,.cov-wrap,.form-col,.gift-col,.foot-firm,.foot-me,.foot-disc{grid-column:1/-1}
+  .foot-firm{grid-column:1/8} .foot-me{grid-column:8/13}
+  .ticket{grid-template-rows:auto}
+  .tk-top{padding:24px}
+  .hero{gap:32px;padding-block:24px 48px}
+  .side-col{display:none}
+  .row[aria-expanded="true"]+.inline-exp{display:block}
+  .inline-exp{grid-column:1/-1;margin:8px 0 12px;font-family:var(--f-b);background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:var(--r-md);padding:16px}
+  .inline-exp .exp{margin-top:0}
+  .why-list{grid-template-columns:1fr 1fr}
+  .tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tab{overflow-wrap:break-word}
+}
+@media (max-width:640px){
+  section{padding-block:48px}
+  .logo{height:36px}
+  .tel-top{display:none}
+  .langs button{min-width:34px;font-size:12.5px}
+  .top{gap:8px}
+  .hero h1{font-size:clamp(27px,8.6vw,34px);max-width:none}
+  .foot{grid-template-columns:minmax(0,1fr)}
+  .lead{font-size:16px}
+  .up{padding:20px}
+  .doc{padding:16px 12px;font-size:13px}
+  .d-head .ttl{text-align:left}
+  .d-meta{grid-template-columns:1fr}
+  .d-cov{grid-template-columns:minmax(0,1fr) auto}
+  .d-cov .hd:nth-child(3){display:none}
+  .d-cov .row{grid-template-columns:24px minmax(0,1fr) auto}
+  .row .pr{display:none}
+  .row{gap:8px}
+  .cov{grid-template-columns:1fr}
+  .cov-row:nth-child(odd){border-right:0}
+  .cov-row:nth-last-child(2){border-bottom:1px solid var(--line)}
+  .split{font-size:40px}
+  .items{grid-template-columns:1fr}
+  .item{grid-template-areas:"st" "h" "a" "p";grid-template-columns:1fr}
+  .item .amt{text-align:left}
+  .cta{grid-template-columns:1fr}
+  .cta .acts .btn{flex:1 1 100%}
+  form,.okbox{padding:20px}
+  .fields{grid-template-columns:1fr}
+  .seg.s4{grid-template-columns:1fr}
+  .why-list{grid-template-columns:1fr}
+  .foot-firm,.foot-me{grid-column:1/-1}
+  .foot{margin-top:40px}
+  .mbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--band);
+    padding:10px max(12px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));box-shadow:0 -10px 30px -10px rgba(0,0,0,.4)}
+  .mbar .btn{min-height:46px;padding:0 12px}
+  .mbar .btn-line{color:var(--on-band);border-color:rgba(231,199,126,.55)}
+  .foot{padding-bottom:120px}
+}
+.hero h1{overflow-wrap:break-word}
+:lang(hy) .hero h1{font-size:clamp(28px,3.6vw,46px)}
+:lang(hy) .h2{font-size:clamp(22px,2.6vw,30px)}
+@media (max-width:640px){:lang(hy) .hero h1{font-size:clamp(21px,6.6vw,28px)}}
+@media (max-width:400px){
+  :lang(hy) .tabs{grid-template-columns:minmax(0,1fr)}
+  .logo{height:30px}
+  .langs{padding:2px}
+  .langs button{min-width:30px;height:30px;font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.4" cy="6.6" r="1.3" fill="currentColor"/></symbol>
+  <symbol id="i-tg" viewBox="0 0 24 24"><path fill="currentColor" d="M21.4 3.6 2.9 10.8c-1.2.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.4l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.9-1.4-1.5ZM9.6 13.5l8.3-5.2c.4-.2.7-.1.4.2l-7 6.4-.3 3.1-1.4-4.5Z"/></symbol>
+  <symbol id="i-web" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z"/></g></symbol>
+  <symbol id="i-tel" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></g></symbol>
+</svg>
+
+<div class="band">
+  <div class="wrap">
+    <header class="top">
+      <img class="logo" src="logo.png" alt="Avagyan Law">
+      <div class="top-r">
+        <div class="langs" role="group" aria-label="Language"><button type="button" data-lang="ru">RU</button><button type="button" data-lang="uk">UA</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="es">ES</button><button type="button" data-lang="hy">HY</button></div>
+        <a class="tel-top" href="tel:+19169999090">(916) 999-9090</a>
+      </div>
+    </header>
+    <div class="hero">
+      <div class="hero-txt">
+        <div class="pills" id="pills"></div>
+        <h1 data-t="h1"></h1>
+        <p class="lead" data-t="lead"></p>
+      </div>
+      <div class="hero-up">
+        <div class="up">
+          <h2 data-t="up_title"></h2>
+          <p class="hint" data-t="up_hint"></p>
+          <label class="drop" id="drop" for="file">
+            <span class="sheet-ico" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+            <span class="btn btn-dark" data-t="up_btn"></span>
+            <span class="or" data-t="up_drop"></span>
+          </label>
+          <input id="file" type="file" accept="application/pdf,image/*" multiple hidden>
+          <div class="files" id="files"></div>
+          <button class="btn btn-gold go" id="go" type="button" disabled data-t="analyze"></button>
+          <div class="status" id="status" hidden></div>
+          <details class="which" id="which">
+            <summary data-t="hint_q"></summary>
+            <ul id="hints"></ul>
+            <a href="#guide" data-t="hint_see"></a>
+          </details>
+          <p class="priv" data-t="up_privacy"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="guide">
+  <div class="wrap">
+    <div class="sec-head"><div><h2 class="h2" data-t="guide_h"></h2><p class="sub" data-t="guide_sub"></p><span class="doc-tag" data-t="guide_ex"></span></div></div>
+    <div class="guide-grid">
+      <div class="doc-col">
+        <div class="doc" id="doc"></div>
+      </div>
+      <aside class="side-col"><div class="panel" id="panel" aria-live="polite"></div></aside>
+    </div>
+  </div>
+</section>
+
+<section class="policy-sec" id="policy">
+  <div class="wrap">
+    <div class="sec-head"><div><h2 class="h2" data-t="policy_h"></h2><p class="sub" id="exnote" data-t="example_note"></p></div><span class="badge" id="pbadge"></span></div>
+    <div class="pol-grid">
+      <div class="ticket">
+        <div class="tk-top">
+          <div class="lbl" data-t="limits"></div>
+          <div class="split" id="split"></div>
+          <div class="split-key" id="splitkey"></div>
+        </div>
+        <dl class="tk" id="tk"></dl>
+      </div>
+      <div class="cov-wrap">
+        <div class="cov" id="cov"></div>
+      </div>
+      <div class="warns" id="warns"></div>
+    </div>
+  </div>
+</section>
+
+<section id="scenarios">
+  <div class="wrap">
+    <div class="sec-head"><h2 class="h2" data-t="scen_h"></h2></div>
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="items" id="items" role="tabpanel"></div>
+    <div class="cta">
+      <p data-t="cta_note"></p>
+      <div class="acts"><a class="btn btn-gold" href="tel:+19169999090"><span data-t="cta_call"></span>&nbsp;(916) 999-9090</a><a class="btn btn-line" href="#lead" data-t="cta_form"></a></div>
+    </div>
+  </div>
+</section>
+
+<section id="lead" style="padding-top:0">
+  <div class="wrap lead-grid">
+    <div class="form-col">
+      <form id="form" novalidate>
+        <h2 class="h2" data-t="form_h"></h2>
+        <p class="sub" data-t="form_sub"></p>
+        <div class="fields">
+          <div class="f"><label for="fname" data-t="f_name"></label><input id="fname" autocomplete="name"></div>
+          <div class="f"><label for="fphone" data-t="f_phone"></label><input id="fphone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(916) 000-0000"></div>
+          <div class="f full"><span class="lg" data-t="f_scen"></span><div class="seg s4" id="fscen"></div></div>
+          <div class="f full"><span class="lg" data-t="f_inj"></span><div class="seg s3" id="finj"></div></div>
+          <div class="f"><label for="fdate" data-t="f_when"></label><input id="fdate" type="date"></div>
+          <div class="f"><label for="flang" data-t="f_lang"></label><select id="flang"><option value="ru">Русский</option><option value="uk">Українська</option><option value="en">English</option><option value="es">Español</option><option value="hy">Հայերեն</option></select></div>
+        </div>
+        <label class="consent"><input id="fconsent" type="checkbox"><span data-t="f_consent"></span></label>
+        <div class="ferr" id="ferr" role="alert"></div>
+        <button class="btn btn-dark" id="fsubmit" type="submit" data-t="f_submit"></button>
+      </form>
+      <div class="okbox" id="okbox" hidden><h2 class="h2" data-t="f_ok_h"></h2><p class="sub" data-t="f_ok"></p></div>
+    </div>
+    <div class="gift-col">
+      <aside class="gift" id="gift">
+        <span class="tag" data-t="gift_tag"></span>
+        <div class="gift-cover"><img id="giftimg" src="gift-ru.jpg" alt=""><span class="lock" id="giftlock" data-t="gift_locked"></span></div>
+        <div>
+          <h3 data-t="gift_h"></h3>
+          <p data-t="gift_sub"></p>
+          <button class="btn btn-gold" id="giftbtn" type="button" disabled data-t="gift_btn" style="margin-top:16px"></button>
+          <p class="gift-msg" id="giftmsg"></p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="why">
+  <div class="wrap">
+    <h2 class="h2" data-t="why_h"></h2>
+    <ul class="why-list" id="why"></ul>
+    <footer class="foot">
+      <div class="foot-firm">
+        <img class="logo" src="logo.png" alt="Avagyan Law">
+        <ul class="clist">
+          <li><svg aria-hidden="true"><use href="#i-web"/></svg><a href="https://avagyanlaw.com" target="_blank" rel="noopener">avagyanlaw.com</a></li>
+          <li><svg aria-hidden="true"><use href="#i-tel"/></svg><span><a href="tel:+19169999090">(916) 999-9090</a><button class="copy" type="button" data-copy="(916) 999-9090" data-t="copy"></button></span></li>
+          <li><svg aria-hidden="true"><use href="#i-pin"/></svg><span>9701 Fair Oaks Blvd., Fair Oaks, CA 95628</span></li>
+        </ul>
+      </div>
+      <div class="foot-me">
+        <h3 data-t="manager"></h3>
+        <p class="role" data-t="write_me"></p>
+        <ul class="clist">
+          <li><svg aria-hidden="true"><use href="#i-ig"/></svg><a href="https://www.instagram.com/pabeloglazov" target="_blank" rel="noopener">@pabeloglazov</a></li>
+          <li><svg aria-hidden="true"><use href="#i-tg"/></svg><a href="https://t.me/pabeloglazov" target="_blank" rel="noopener">@pabeloglazov</a></li>
+        </ul>
+      </div>
+      <p class="foot-disc" data-t="disc"></p>
+    </footer>
+  </div>
+</section>
+
+<div class="mbar"><a class="btn btn-gold" href="tel:+19169999090" data-t="cta_call"></a><a class="btn btn-line" href="#lead" data-t="cta_form"></a></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<script>
+/* ===== Настройки для публичного сайта =====
+   API_URL — адрес веб-приложения Google Apps Script (см. Code.gs). Пусто — режим Claude-артефакта. */
+const CONFIG = { API_URL: "%%API_URL%%", GIFT: { ru: "pamyatka-ru.pdf", uk: "pamyatka-ru.pdf", en: "pamyatka-en.pdf", es: "pamyatka-en.pdf", hy: "pamyatka-en.pdf" } };
+/* Тексты лендинга на 4 языках. {x} — подстановки. */
+const T = {
+ru: {
+  call: "Позвонить", copy: "Копировать", copied: "Скопировано",
+  pills: ["Personal Injury", "24/7", "Калифорния"],
+  h1: "Попали в ДТП? Узнайте, что вам положено по вашей страховке",
+  lead: "Загрузите declaration page, первую страницу автополиса. Мы прочитаем лимиты и покажем, что покрывает страховка в каждой ситуации: виноват другой водитель, у него нет страховки, он скрылся или виноваты вы.",
+  up_title: "Загрузите свой полис",
+  up_hint: "PDF или фото страницы, где перечислены Coverages и Limits. Можно несколько фото.",
+  up_btn: "Выбрать файл", up_drop: "или перетащите сюда",
+  up_privacy: "Файл нужен только для разбора полиса.",
+  analyze: "Разобрать полис", reset: "Убрать",
+  st_read: "Открываю документ…", st_ai: "Распознаю лимиты и покрытия. Обычно это 20–40 секунд…",
+  err_notdec: "Это не похоже на declaration page автополиса. Загрузите страницу, где перечислены Coverages и Limits.",
+  err_file: "Не получилось открыть файл. Сохраните его как PDF или JPG и попробуйте снова.",
+  err_ai: "Не получилось распознать полис. Позвоните нам, разберём вручную за 5 минут.",
+  err_noai: "Автоматический разбор сейчас недоступен. Оставьте телефон ниже, разберём полис вручную.",
+  err_denied: "Без разрешения на AI полис не разобрать. Оставьте телефон ниже, разберём вручную.",
+  example_badge: "Пример полиса", yours_badge: "Ваш полис",
+  example_note: "Сейчас показан пример. Загрузите свой полис, чтобы увидеть свои цифры.",
+  policy_h: "Что в полисе", limits: "Лимиты BI / BI / PD", period: "Срок", insurer: "Страховая",
+  cov: { bi: "Травмы других — Bodily Injury", pd: "Чужое имущество — Property Damage", um: "Виновник без страховки — UM", uim: "Мало страховки у виновника — UIM", umpd: "Машина при незастрахованном — UMPD", medpay: "Лечение без учёта вины — MedPay", coll: "Ваша машина при ДТП — Collision", comp: "Угон, град, стекло — Comprehensive", rental: "Аренда машины — Rental", tow: "Эвакуатор — Towing" },
+  none: "нет", yes: "есть", ded: "франшиза", pp: "на человека", pa: "на ДТП", pd_short: "в день",
+  scen_h: "Что вам положено в каждой ситуации",
+  tabs: { insured: "В меня врезался застрахованный", uninsured: "Виновник без страховки", hitrun: "Виновник скрылся", atfault: "Виноват я" },
+  status: { ok: "Покрыто", part: "Частично", no: "Не покрыто", info: "Важно" },
+  cta_note: "Это ориентир по вашему полису. Детали по вашему делу расскажем на бесплатной консультации.",
+  cta_call: "Позвонить", cta_form: "Оставить заявку",
+  form_h: "Разберём ваше дело бесплатно",
+  form_sub: "Оставьте телефон: перезвоним сегодня, а памятку «Что делать после ДТП» вы скачаете сразу.",
+  f_name: "Имя", f_phone: "Телефон", f_when: "Дата аварии", f_inj: "Есть травмы?",
+  inj: { yes: "Да", no: "Нет", unsure: "Пока не знаю" },
+  f_scen: "Что случилось", f_lang: "Язык общения",
+  f_consent: "Согласен(на), чтобы со мной связались по телефону или в мессенджере",
+  f_submit: "Получить консультацию и памятку", f_sending: "Отправляю…",
+  f_ok_h: "Заявка принята", f_ok: "Перезвоним в ближайшее время. А пока скачайте памятку:",
+  e_name: "Укажите имя", e_phone: "Проверьте номер телефона", e_consent: "Отметьте согласие", e_send: "Не удалось отправить. Позвоните нам: (916) 999-9090",
+  gift_tag: "Подарок", gift_h: "Памятка «Что делать после ДТП»",
+  gift_sub: "Шаги, которые защищают ваши права и здоровье в первые дни после аварии.",
+  gift_btn: "Скачать памятку", gift_locked: "Откроется после заявки", gift_fail: "Не получилось скачать. Пришлём памятку в мессенджер.",
+  why_h: "Почему Avagyan Law",
+  why: ["Ничего не платите вперёд", "Бесплатная оценка ущерба — обычно выше, чем у страховой", "Со страховой общаемся мы", "Подменная машина, если ваша не на ходу", "Ведём дела до суда присяжных", "На связи 24/7"],
+  manager: "Павел Белоглазов, Personal Injury",
+  disc: "Attorney Advertising. Разбор полиса носит информационный характер и не является юридической консультацией. Итоговая сумма зависит от обстоятельств ДТП, травм и полиса виновника. Отношения адвокат–клиент возникают только после подписания договора.",
+  it: {
+    their_bi: ["Ваши травмы оплачивает страховка виновника", "Лечение, потерянный заработок, боль и страдания покрывает Bodily Injury виновника в пределах его лимита. Минимальный лимит в Калифорнии — $30,000 на человека.", "от $30,000"],
+    uim_yes: ["Ваш UIM доплатит сверх лимита виновника", "Если травмы дороже лимита виновника, ваш полис доплачивает разницу: до {uim} на человека минус выплата виновника. При минимальном полисе виновника это до {extra} сверху.", "до {uim}"],
+    uim_low: ["UIM есть, но почти не сработает", "В Калифорнии UIM доплачивает только разницу между вашим лимитом и лимитом виновника. Ваш лимит {uim} не выше минимума $30,000, поэтому доплаты, скорее всего, не будет. Лимит стоит поднять.", "{uim}"],
+    uim_none: ["UIM нет", "Если травмы дороже лимита виновника, разницу придётся требовать с него лично.", "—"],
+    medpay_yes: ["MedPay оплачивает лечение сразу", "Покрывает лечение вас и пассажиров независимо от вины, не дожидаясь окончания дела.", "до {m}"],
+    medpay_none: ["MedPay нет", "До закрытия дела лечение оплачивает медстраховка или врачи лечат под выплату в конце дела. Таких врачей подключаем мы.", "—"],
+    car_their: ["Ремонт и аренду машины оплачивает виновник", "Property Damage виновника платит за ремонт или рыночную стоимость машины и за аренду на время ремонта.", "по ущербу"],
+    collision_opt: ["Можно чинить быстрее через свой Collision", "Ремонт по вашему Collision, а франшизу {d} потом возвращают со страховки виновника.", "франшиза {d}"],
+    pain: ["Боль и страдания", "Пока ваш полис действует, вы вправе требовать компенсацию за боль и страдания. Обычно это самая крупная часть выплаты.", "да"],
+    um_yes: ["Травмы оплачивает ваш UM", "У виновника нет страховки, поэтому ваш Uninsured Motorist платит вместо него: лечение, заработок, боль и страдания. Лимит на всё ДТП — {pa}.", "до {pp}"],
+    um_none: ["UM нет", "За травмы можно требовать только с виновника лично. Если у него нет страховки и имущества, получить деньги трудно.", "—"],
+    umpd_waiver: ["Машина: Collision без франшизы", "Ремонт по вашему Collision. UMPD закрывает франшизу {d}, если виновник установлен: имя и номер машины.", "франшиза $0"],
+    collision_only: ["Машина: только Collision", "Ремонт по вашему Collision, франшизу {d} платите вы.", "минус {d}"],
+    umpd_only: ["Машина: UMPD", "Ремонт оплатит UMPD до {u}, если виновник установлен. Всё, что дороже, остаётся на вас.", "до {u}"],
+    car_none: ["Машина не покрыта", "В полисе нет ни Collision, ни UMPD. Ремонт за ваш счёт или через иск к виновнику лично.", "—"],
+    um_hr: ["Травмы оплачивает ваш UM", "UM работает и когда виновник скрылся, если был контакт машин. Сообщите в полицию в течение 24 часов и в свою страховую не позже 30 дней.", "до {pp}"],
+    um_none_hr: ["UM нет", "Виновник скрылся, а UM в полисе нет, поэтому за травмы платить некому. Позвоните: проверим полисы членов семьи.", "—"],
+    collision_hr: ["Машина: только Collision", "Если виновник скрылся, UMPD в Калифорнии не платит. Остаётся Collision, франшиза {d} на вас.", "минус {d}"],
+    car_none_hr: ["Машина не покрыта", "Collision в полисе нет, а UMPD при скрывшемся виновнике не работает. Ремонт за ваш счёт.", "—"],
+    others_bi: ["Травмы пострадавших оплачивает ваш полис", "Ваш Bodily Injury платит пострадавшим до {pp} на человека и {pa} на всё ДТП. Всё, что сверх лимита, могут требовать с вас лично.", "{pp} / {pa}"],
+    others_bi_none: ["Ответственность за травмы не найдена", "В документе не видно Bodily Injury. Без него пострадавшие будут требовать компенсацию с вас лично. Позвоните, проверим.", "—"],
+    others_pd: ["Чужую машину оплачивает ваш полис", "Property Damage покрывает чужую машину и имущество до {pd}.", "до {pd}"],
+    own_collision: ["Свою машину чините по Collision", "Ремонт вашей машины за вычетом франшизы {d}.", "минус {d}"],
+    own_car_none: ["Свою машину — за свой счёт", "Collision в полисе нет, поэтому при вашей вине ремонт своей машины не покрывается.", "—"],
+    own_medpay: ["Своё лечение — через MedPay", "MedPay платит за лечение вас и пассажиров даже при вашей вине.", "до {m}"],
+    own_injury_none: ["Своё лечение — через медстраховку", "MedPay в полисе нет. При вашей вине ваше лечение покрывает только медицинская страховка.", "—"],
+    passengers: ["Ваши пассажиры тоже могут получить компенсацию", "Пассажиры требуют компенсацию с вашего Bodily Injury. Для членов семьи бывают исключения, проверим ваш полис.", "до {pp}"],
+    fault: ["Вы точно виноваты?", "Вину часто оспаривают. В Калифорнии её делят в процентах: даже при частичной вине вы получаете компенсацию за долю другого водителя.", ""]
+  },
+  w_expired: "Срок полиса по документу закончился {end}. Если на дату аварии полис не действовал, по закону Prop 213 нельзя требовать с виновника боль и страдания. Позвоните, проверим.",
+  w_below: "Лимит Bodily Injury {pp}/{pa} ниже действующего минимума Калифорнии $30,000/$60,000.",
+  w_multi: "В полисе несколько машин. Показаны покрытия первой: {veh}."
+},
+
+uk: {
+  call: "Зателефонувати", copy: "Копіювати", copied: "Скопійовано",
+  pills: ["Personal Injury", "24/7", "Каліфорнія"],
+  h1: "Потрапили в ДТП? Дізнайтеся, що вам належить за вашою страховкою",
+  lead: "Завантажте declaration page, першу сторінку автополіса. Ми прочитаємо ліміти й покажемо, що покриває страховка в кожній ситуації: винен інший водій, у нього немає страховки, він зник з місця ДТП або винні ви.",
+  up_title: "Завантажте свій поліс",
+  up_hint: "PDF або фото сторінки, де перелічені Coverages і Limits. Можна кілька фото.",
+  up_btn: "Обрати файл", up_drop: "або перетягніть сюди",
+  up_privacy: "Файл потрібен лише для розбору поліса.",
+  analyze: "Розібрати поліс", reset: "Прибрати",
+  st_read: "Відкриваю документ…", st_ai: "Розпізнаю ліміти й покриття. Зазвичай це 20–40 секунд…",
+  err_notdec: "Це не схоже на declaration page автополіса. Завантажте сторінку, де перелічені Coverages і Limits.",
+  err_file: "Не вдалося відкрити файл. Збережіть його як PDF або JPG і спробуйте ще раз.",
+  err_ai: "Не вдалося розпізнати поліс. Зателефонуйте нам, розберемо вручну за 5 хвилин.",
+  err_noai: "Автоматичний розбір зараз недоступний. Залиште телефон нижче, розберемо поліс вручну.",
+  err_denied: "Без дозволу на AI поліс не розібрати. Залиште телефон нижче, розберемо вручну.",
+  example_badge: "Приклад поліса", yours_badge: "Ваш поліс",
+  example_note: "Зараз показано приклад. Завантажте свій поліс, щоб побачити свої цифри.",
+  policy_h: "Що в полісі", limits: "Ліміти BI / BI / PD", period: "Термін", insurer: "Страхова",
+  cov: { bi: "Травми інших — Bodily Injury", pd: "Чуже майно — Property Damage", um: "Винуватець без страховки — UM", uim: "Замало страховки у винуватця — UIM", umpd: "Авто при незастрахованому — UMPD", medpay: "Лікування незалежно від вини — MedPay", coll: "Ваше авто при ДТП — Collision", comp: "Викрадення, град, скло — Comprehensive", rental: "Оренда авто — Rental", tow: "Евакуатор — Towing" },
+  none: "немає", yes: "є", ded: "франшиза", pp: "на людину", pa: "на ДТП", pd_short: "на день",
+  scen_h: "Що вам належить у кожній ситуації",
+  tabs: { insured: "У мене врізався застрахований", uninsured: "Винуватець без страховки", hitrun: "Винуватець зник", atfault: "Винен я" },
+  status: { ok: "Покрито", part: "Частково", no: "Не покрито", info: "Важливо" },
+  cta_note: "Це орієнтир за вашим полісом. Деталі щодо вашої справи розповімо на безкоштовній консультації.",
+  cta_call: "Зателефонувати", cta_form: "Залишити заявку",
+  form_h: "Розберемо вашу справу безкоштовно",
+  form_sub: "Залиште телефон: передзвонимо сьогодні, а пам'ятку «Що робити після ДТП» ви завантажите одразу.",
+  f_name: "Ім'я", f_phone: "Телефон", f_when: "Дата аварії", f_inj: "Є травми?",
+  inj: { yes: "Так", no: "Ні", unsure: "Поки не знаю" },
+  f_scen: "Що сталося", f_lang: "Мова спілкування",
+  f_consent: "Погоджуюся, щоб зі мною зв'язалися телефоном або в месенджері",
+  f_submit: "Отримати консультацію та пам'ятку", f_sending: "Надсилаю…",
+  f_ok_h: "Заявку прийнято", f_ok: "Передзвонимо найближчим часом. А поки завантажте пам'ятку:",
+  e_name: "Вкажіть ім'я", e_phone: "Перевірте номер телефону", e_consent: "Позначте згоду", e_send: "Не вдалося надіслати. Зателефонуйте нам: (916) 999-9090",
+  gift_tag: "Подарунок", gift_h: "Пам'ятка «Що робити після ДТП»",
+  gift_sub: "Кроки, які захищають ваші права і здоров'я в перші дні після аварії.",
+  gift_btn: "Завантажити пам'ятку", gift_locked: "Відкриється після заявки", gift_fail: "Не вдалося завантажити. Надішлемо пам'ятку в месенджер.",
+  why_h: "Чому Avagyan Law",
+  why: ["Нічого не платите наперед", "Безкоштовна оцінка збитків — зазвичай вища, ніж у страхової", "Зі страховою спілкуємося ми", "Підмінне авто, якщо ваше не на ходу", "Ведемо справи до суду присяжних", "На зв'язку 24/7"],
+  manager: "Павло Білоглазов, Personal Injury",
+  disc: "Attorney Advertising. Розбір поліса має інформаційний характер і не є юридичною консультацією. Підсумкова сума залежить від обставин ДТП, травм і поліса винуватця. Відносини адвокат–клієнт виникають лише після підписання договору.",
+  it: {
+    their_bi: ["Ваші травми оплачує страховка винуватця", "Лікування, втрачений заробіток, біль і страждання покриває Bodily Injury винуватця в межах його ліміту. Мінімальний ліміт у Каліфорнії — $30,000 на людину.", "від $30,000"],
+    uim_yes: ["Ваш UIM доплатить понад ліміт винуватця", "Якщо травми дорожчі за ліміт винуватця, ваш поліс доплачує різницю: до {uim} на людину мінус виплата винуватця. При мінімальному полісі винуватця це до {extra} зверху.", "до {uim}"],
+    uim_low: ["UIM є, але майже не спрацює", "У Каліфорнії UIM доплачує лише різницю між вашим лімітом і лімітом винуватця. Ваш ліміт {uim} не вищий за мінімум $30,000, тож доплати, найімовірніше, не буде. Ліміт варто підняти.", "{uim}"],
+    uim_none: ["UIM немає", "Якщо травми дорожчі за ліміт винуватця, різницю доведеться вимагати з нього особисто.", "—"],
+    medpay_yes: ["MedPay оплачує лікування одразу", "Покриває лікування вас і пасажирів незалежно від вини, не чекаючи завершення справи.", "до {m}"],
+    medpay_none: ["MedPay немає", "До закриття справи лікування оплачує медстраховка або лікарі лікують під виплату наприкінці справи. Таких лікарів підключаємо ми.", "—"],
+    car_their: ["Ремонт і оренду авто оплачує винуватець", "Property Damage винуватця платить за ремонт або ринкову вартість авто та за оренду на час ремонту.", "за збитком"],
+    collision_opt: ["Можна полагодити швидше через свій Collision", "Ремонт за вашим Collision, а франшизу {d} потім повертають зі страховки винуватця.", "франшиза {d}"],
+    pain: ["Біль і страждання", "Поки ваш поліс діє, ви маєте право вимагати компенсацію за біль і страждання. Зазвичай це найбільша частина виплати.", "так"],
+    um_yes: ["Травми оплачує ваш UM", "У винуватця немає страховки, тому ваш Uninsured Motorist платить замість нього: лікування, заробіток, біль і страждання. Ліміт на все ДТП — {pa}.", "до {pp}"],
+    um_none: ["UM немає", "За травми можна вимагати лише з винуватця особисто. Якщо в нього немає страховки й майна, отримати гроші важко.", "—"],
+    umpd_waiver: ["Авто: Collision без франшизи", "Ремонт за вашим Collision. UMPD закриває франшизу {d}, якщо винуватця встановлено: ім'я та номер авто.", "франшиза $0"],
+    collision_only: ["Авто: лише Collision", "Ремонт за вашим Collision, франшизу {d} платите ви.", "мінус {d}"],
+    umpd_only: ["Авто: UMPD", "Ремонт оплатить UMPD до {u}, якщо винуватця встановлено. Усе, що дорожче, лишається на вас.", "до {u}"],
+    car_none: ["Авто не покрито", "У полісі немає ні Collision, ні UMPD. Ремонт за ваш рахунок або через позов до винуватця особисто.", "—"],
+    um_hr: ["Травми оплачує ваш UM", "UM працює і тоді, коли винуватець зник, якщо був контакт машин. Повідомте поліцію протягом 24 годин і свою страхову не пізніше 30 днів.", "до {pp}"],
+    um_none_hr: ["UM немає", "Винуватець зник, а UM у полісі немає, тож за травми платити нікому. Зателефонуйте: перевіримо поліси членів родини.", "—"],
+    collision_hr: ["Авто: лише Collision", "Якщо винуватець зник, UMPD у Каліфорнії не платить. Лишається Collision, франшиза {d} на вас.", "мінус {d}"],
+    car_none_hr: ["Авто не покрито", "Collision у полісі немає, а UMPD при зниклому винуватцеві не працює. Ремонт за ваш рахунок.", "—"],
+    others_bi: ["Травми потерпілих оплачує ваш поліс", "Ваш Bodily Injury платить потерпілим до {pp} на людину і {pa} на все ДТП. Усе, що понад ліміт, можуть вимагати з вас особисто.", "{pp} / {pa}"],
+    others_bi_none: ["Відповідальність за травми не знайдено", "У документі не видно Bodily Injury. Без нього потерпілі вимагатимуть компенсацію з вас особисто. Зателефонуйте, перевіримо.", "—"],
+    others_pd: ["Чуже авто оплачує ваш поліс", "Property Damage покриває чуже авто й майно до {pd}.", "до {pd}"],
+    own_collision: ["Своє авто ремонтуєте за Collision", "Ремонт вашого авто за вирахуванням франшизи {d}.", "мінус {d}"],
+    own_car_none: ["Своє авто — за свій рахунок", "Collision у полісі немає, тому за вашої вини ремонт свого авто не покривається.", "—"],
+    own_medpay: ["Своє лікування — через MedPay", "MedPay платить за лікування вас і пасажирів навіть за вашої вини.", "до {m}"],
+    own_injury_none: ["Своє лікування — через медстраховку", "MedPay у полісі немає. За вашої вини ваше лікування покриває лише медична страховка.", "—"],
+    passengers: ["Ваші пасажири теж можуть отримати компенсацію", "Пасажири вимагають компенсацію з вашого Bodily Injury. Для членів родини бувають винятки, перевіримо ваш поліс.", "до {pp}"],
+    fault: ["Ви точно винні?", "Вину часто оскаржують. У Каліфорнії її ділять у відсотках: навіть за часткової вини ви отримуєте компенсацію за частку іншого водія.", ""]
+  },
+  w_expired: "Термін поліса за документом закінчився {end}. Якщо на дату аварії поліс не діяв, за законом Prop 213 не можна вимагати з винуватця біль і страждання. Зателефонуйте, перевіримо.",
+  w_below: "Ліміт Bodily Injury {pp}/{pa} нижчий за чинний мінімум Каліфорнії $30,000/$60,000.",
+  w_multi: "У полісі кілька авто. Показано покриття першого: {veh}."
+},
+
+en: {
+  call: "Call", copy: "Copy", copied: "Copied",
+  pills: ["Personal Injury", "24/7", "California"],
+  h1: "In a car accident? See what your insurance actually owes you",
+  lead: "Upload your declarations page, the first page of your auto policy. We read the limits and show what your coverage pays in each case: the other driver is at fault, has no insurance, fled the scene, or you were at fault.",
+  up_title: "Upload your policy",
+  up_hint: "A PDF or photo of the page that lists Coverages and Limits. Several photos are fine.",
+  up_btn: "Choose file", up_drop: "or drop it here",
+  up_privacy: "Your file is used only to read your policy.",
+  analyze: "Check my policy", reset: "Remove",
+  st_read: "Opening the document…", st_ai: "Reading limits and coverages. This usually takes 20–40 seconds…",
+  err_notdec: "This doesn't look like an auto policy declarations page. Upload the page that lists Coverages and Limits.",
+  err_file: "We couldn't open this file. Save it as a PDF or JPG and try again.",
+  err_ai: "We couldn't read this policy. Call us and we'll go through it with you in 5 minutes.",
+  err_noai: "Automatic review is unavailable right now. Leave your number below and we'll review your policy by hand.",
+  err_denied: "The AI review needs your permission. Leave your number below and we'll review it by hand.",
+  example_badge: "Sample policy", yours_badge: "Your policy",
+  example_note: "You're looking at a sample. Upload your policy to see your own numbers.",
+  policy_h: "What's in the policy", limits: "Limits BI / BI / PD", period: "Term", insurer: "Insurer",
+  cov: { bi: "Bodily Injury liability", pd: "Property Damage liability", um: "Uninsured Motorist — UM", uim: "Underinsured Motorist — UIM", umpd: "Uninsured Motorist Property Damage — UMPD", medpay: "Medical Payments — MedPay", coll: "Collision", comp: "Comprehensive — theft, hail, glass", rental: "Rental reimbursement", tow: "Towing / Roadside" },
+  none: "none", yes: "included", ded: "deductible", pp: "per person", pa: "per accident", pd_short: "per day",
+  scen_h: "What you can recover in each situation",
+  tabs: { insured: "An insured driver hit me", uninsured: "The other driver had no insurance", hitrun: "Hit and run", atfault: "I was at fault" },
+  status: { ok: "Covered", part: "Partly", no: "Not covered", info: "Note" },
+  cta_note: "This is an estimate based on your policy. We'll walk you through the details of your case in a free consultation.",
+  cta_call: "Call", cta_form: "Request a callback",
+  form_h: "Free case review",
+  form_sub: "Leave your number. We'll call you back today, and you can download our after-accident checklist right away.",
+  f_name: "Name", f_phone: "Phone", f_when: "Accident date", f_inj: "Anyone injured?",
+  inj: { yes: "Yes", no: "No", unsure: "Not sure yet" },
+  f_scen: "What happened", f_lang: "Preferred language",
+  f_consent: "I agree to be contacted by phone or messenger",
+  f_submit: "Get my free review and checklist", f_sending: "Sending…",
+  f_ok_h: "Request received", f_ok: "We'll call you shortly. In the meantime, download your checklist:",
+  e_name: "Enter your name", e_phone: "Check the phone number", e_consent: "Please tick the consent box", e_send: "Couldn't send. Please call us: (916) 999-9090",
+  gift_tag: "Free gift", gift_h: "Checklist: what to do after an accident",
+  gift_sub: "The steps that protect your rights and your health in the first days after a crash.",
+  gift_btn: "Download checklist", gift_locked: "Unlocks after you submit", gift_fail: "Download failed. We'll send the checklist by message.",
+  why_h: "Why Avagyan Law",
+  why: ["Nothing to pay upfront", "Free damage appraisal — usually higher than the insurer's", "We deal with the insurance company", "Replacement car if yours can't be driven", "We take cases to jury trial", "Available 24/7"],
+  manager: "Pavel Beloglazov, Personal Injury",
+  disc: "Attorney Advertising. This policy review is for information only and is not legal advice. Actual recovery depends on the facts of the accident, your injuries and the at-fault driver's policy. An attorney–client relationship is formed only by a signed agreement.",
+  it: {
+    their_bi: ["The at-fault driver's insurer pays for your injuries", "Medical bills, lost wages, pain and suffering are paid by the at-fault driver's Bodily Injury coverage up to their limit. California's minimum is $30,000 per person.", "from $30,000"],
+    uim_yes: ["Your UIM pays above their limit", "If your injuries are worth more than their limit, your policy pays the difference: up to {uim} per person minus what their insurer paid. Against a minimum-limit driver that's up to {extra} extra.", "up to {uim}"],
+    uim_low: ["You have UIM, but it will barely help", "In California, UIM pays only the gap between your limit and theirs. Your {uim} limit is no higher than the $30,000 minimum, so there will most likely be nothing extra. Worth raising.", "{uim}"],
+    uim_none: ["No UIM", "If your injuries exceed their limit, you would have to go after the driver personally for the rest.", "—"],
+    medpay_yes: ["MedPay covers treatment right away", "Pays medical bills for you and your passengers regardless of fault, without waiting for the case to close.", "up to {m}"],
+    medpay_none: ["No MedPay", "Until the case settles, treatment goes through your health insurance or doctors who are paid at the end of the case. We connect you with them.", "—"],
+    car_their: ["Their insurer pays for your car and a rental", "The at-fault driver's Property Damage pays for repairs or the car's market value, plus a rental while it's in the shop.", "actual damage"],
+    collision_opt: ["Faster repairs through your Collision", "Repair under your Collision; the {d} deductible is recovered from their insurer later.", "{d} deductible"],
+    pain: ["Pain and suffering", "As long as your policy is active, you can claim pain and suffering. It is usually the largest part of a settlement.", "yes"],
+    um_yes: ["Your UM pays for your injuries", "The other driver has no insurance, so your Uninsured Motorist coverage steps in: treatment, wages, pain and suffering. Per-accident limit: {pa}.", "up to {pp}"],
+    um_none: ["No UM", "You could only go after the driver personally. Without insurance or assets, collecting is hard.", "—"],
+    umpd_waiver: ["Your car: Collision with no deductible", "Repair under your Collision. UMPD covers the {d} deductible if the driver is identified by name and plate.", "$0 deductible"],
+    collision_only: ["Your car: Collision only", "Repair under your Collision; you pay the {d} deductible.", "minus {d}"],
+    umpd_only: ["Your car: UMPD", "UMPD pays for repairs up to {u} if the driver is identified. Anything above that is on you.", "up to {u}"],
+    car_none: ["Your car isn't covered", "There's no Collision or UMPD on this policy. Repairs are on you, or you sue the driver personally.", "—"],
+    um_hr: ["Your UM pays for your injuries", "UM applies in a hit and run when there was contact between vehicles. Report it to police within 24 hours and to your insurer within 30 days.", "up to {pp}"],
+    um_none_hr: ["No UM", "The driver fled and there's no UM on this policy, so no one pays for the injuries. Call us — we'll check other policies in your household.", "—"],
+    collision_hr: ["Your car: Collision only", "In California, UMPD doesn't pay when the driver fled. Collision is left, and the {d} deductible is on you.", "minus {d}"],
+    car_none_hr: ["Your car isn't covered", "No Collision on this policy, and UMPD doesn't apply to hit and run. Repairs are on you.", "—"],
+    others_bi: ["Your policy pays the injured people", "Your Bodily Injury coverage pays up to {pp} per person and {pa} per accident. Anything above the limit can be claimed from you personally.", "{pp} / {pa}"],
+    others_bi_none: ["No injury liability found", "We don't see Bodily Injury on this document. Without it, injured people would come after you personally. Call us to check.", "—"],
+    others_pd: ["Your policy pays for their car", "Property Damage covers the other car and property up to {pd}.", "up to {pd}"],
+    own_collision: ["Your car is fixed under Collision", "Your repairs are paid minus the {d} deductible.", "minus {d}"],
+    own_car_none: ["Your car is on you", "No Collision on this policy, so your own repairs aren't covered when you're at fault.", "—"],
+    own_medpay: ["Your treatment: MedPay", "MedPay pays for you and your passengers even when you're at fault.", "up to {m}"],
+    own_injury_none: ["Your treatment: health insurance", "No MedPay on this policy. When you're at fault, only your health insurance covers your treatment.", "—"],
+    passengers: ["Your passengers can recover too", "Passengers can claim against your Bodily Injury coverage. Family members are sometimes excluded — we'll check your policy.", "up to {pp}"],
+    fault: ["Are you sure it was your fault?", "Fault is often disputed. California splits it by percentage, so even if you're partly at fault you recover for the other driver's share.", ""]
+  },
+  w_expired: "The policy term on this document ended {end}. If the policy wasn't active on the accident date, Prop 213 bars pain-and-suffering claims against the at-fault driver. Call us to check.",
+  w_below: "Bodily Injury limit {pp}/{pa} is below California's current minimum of $30,000/$60,000.",
+  w_multi: "This policy has several vehicles. Showing coverage for the first: {veh}."
+},
+
+es: {
+  call: "Llamar", copy: "Copiar", copied: "Copiado",
+  pills: ["Personal Injury", "24/7", "California"],
+  h1: "¿Tuvo un accidente? Vea lo que le corresponde según su seguro",
+  lead: "Suba su página de declaraciones, la primera hoja de su póliza de auto. Leemos los límites y le mostramos qué cubre su seguro en cada caso: el otro conductor tuvo la culpa, no tiene seguro, huyó, o la culpa fue suya.",
+  up_title: "Suba su póliza",
+  up_hint: "PDF o foto de la página donde aparecen Coverages y Limits. Puede subir varias fotos.",
+  up_btn: "Elegir archivo", up_drop: "o arrástrelo aquí",
+  up_privacy: "El archivo solo se usa para revisar su póliza.",
+  analyze: "Revisar mi póliza", reset: "Quitar",
+  st_read: "Abriendo el documento…", st_ai: "Leyendo límites y coberturas. Suele tardar 20–40 segundos…",
+  err_notdec: "Esto no parece una página de declaraciones de seguro de auto. Suba la página con Coverages y Limits.",
+  err_file: "No pudimos abrir el archivo. Guárdelo como PDF o JPG e inténtelo de nuevo.",
+  err_ai: "No pudimos leer la póliza. Llámenos y la revisamos con usted en 5 minutos.",
+  err_noai: "La revisión automática no está disponible ahora. Deje su teléfono abajo y la revisamos a mano.",
+  err_denied: "La revisión con IA necesita su permiso. Deje su teléfono abajo y la revisamos a mano.",
+  example_badge: "Póliza de ejemplo", yours_badge: "Su póliza",
+  example_note: "Está viendo un ejemplo. Suba su póliza para ver sus propios números.",
+  policy_h: "Qué incluye la póliza", limits: "Límites BI / BI / PD", period: "Vigencia", insurer: "Aseguradora",
+  cov: { bi: "Lesiones a otros — Bodily Injury", pd: "Daños a bienes ajenos — Property Damage", um: "Conductor sin seguro — UM", uim: "Conductor con poco seguro — UIM", umpd: "Su auto si el otro no tiene seguro — UMPD", medpay: "Gastos médicos sin importar la culpa — MedPay", coll: "Su auto en un choque — Collision", comp: "Robo, granizo, vidrios — Comprehensive", rental: "Auto de renta — Rental", tow: "Grúa — Towing" },
+  none: "no", yes: "sí", ded: "deducible", pp: "por persona", pa: "por accidente", pd_short: "por día",
+  scen_h: "Lo que le corresponde en cada situación",
+  tabs: { insured: "Me chocó un conductor asegurado", uninsured: "El culpable no tenía seguro", hitrun: "El culpable huyó", atfault: "La culpa fue mía" },
+  status: { ok: "Cubierto", part: "Parcial", no: "Sin cobertura", info: "Importante" },
+  cta_note: "Es una estimación según su póliza. Los detalles de su caso se los explicamos en una consulta gratuita.",
+  cta_call: "Llamar", cta_form: "Dejar solicitud",
+  form_h: "Revisamos su caso gratis",
+  form_sub: "Deje su teléfono: le llamamos hoy y puede descargar ya nuestra guía «Qué hacer después de un accidente».",
+  f_name: "Nombre", f_phone: "Teléfono", f_when: "Fecha del accidente", f_inj: "¿Hay lesiones?",
+  inj: { yes: "Sí", no: "No", unsure: "Aún no sé" },
+  f_scen: "Qué pasó", f_lang: "Idioma preferido",
+  f_consent: "Acepto que me contacten por teléfono o mensajería",
+  f_submit: "Recibir consulta y guía", f_sending: "Enviando…",
+  f_ok_h: "Solicitud recibida", f_ok: "Le llamaremos pronto. Mientras tanto, descargue su guía:",
+  e_name: "Escriba su nombre", e_phone: "Revise el número de teléfono", e_consent: "Marque la casilla de consentimiento", e_send: "No se pudo enviar. Llámenos: (916) 999-9090",
+  gift_tag: "Regalo", gift_h: "Guía: qué hacer después de un accidente",
+  gift_sub: "Los pasos que protegen sus derechos y su salud en los primeros días tras el choque.",
+  gift_btn: "Descargar guía", gift_locked: "Se abre al enviar la solicitud", gift_fail: "No se pudo descargar. Le enviaremos la guía por mensaje.",
+  why_h: "Por qué Avagyan Law",
+  why: ["No paga nada por adelantado", "Avalúo de daños gratis — normalmente más alto que el de la aseguradora", "Nosotros tratamos con la aseguradora", "Auto de reemplazo si el suyo no funciona", "Llevamos casos hasta juicio con jurado", "Disponibles 24/7"],
+  manager: "Pavel Beloglazov, Personal Injury",
+  disc: "Attorney Advertising. Esta revisión es solo informativa y no constituye asesoría legal. La compensación real depende de los hechos del accidente, sus lesiones y la póliza del culpable. La relación abogado–cliente solo existe tras firmar un contrato.",
+  it: {
+    their_bi: ["El seguro del culpable paga sus lesiones", "Gastos médicos, salario perdido, dolor y sufrimiento los paga el Bodily Injury del culpable hasta su límite. El mínimo en California es $30,000 por persona.", "desde $30,000"],
+    uim_yes: ["Su UIM paga por encima del límite del culpable", "Si sus lesiones valen más que el límite del culpable, su póliza paga la diferencia: hasta {uim} por persona menos lo que pagó el culpable. Frente a una póliza mínima, son hasta {extra} adicionales.", "hasta {uim}"],
+    uim_low: ["Tiene UIM, pero casi no le servirá", "En California el UIM paga solo la diferencia entre su límite y el del culpable. Su límite de {uim} no supera el mínimo de $30,000, así que probablemente no habrá pago extra. Conviene subirlo.", "{uim}"],
+    uim_none: ["Sin UIM", "Si sus lesiones superan el límite del culpable, tendría que reclamarle la diferencia a él personalmente.", "—"],
+    medpay_yes: ["MedPay paga el tratamiento de inmediato", "Cubre la atención médica suya y de sus pasajeros sin importar la culpa, sin esperar a que cierre el caso.", "hasta {m}"],
+    medpay_none: ["Sin MedPay", "Hasta cerrar el caso, el tratamiento va por su seguro médico o con médicos que cobran al final del caso. Nosotros le conectamos con ellos.", "—"],
+    car_their: ["El culpable paga su auto y la renta", "El Property Damage del culpable paga la reparación o el valor de mercado del auto, más un auto de renta mientras lo reparan.", "según el daño"],
+    collision_opt: ["Reparación más rápida con su Collision", "Repare con su Collision; el deducible de {d} se recupera después del seguro del culpable.", "deducible {d}"],
+    pain: ["Dolor y sufrimiento", "Mientras su póliza esté vigente, puede reclamar dolor y sufrimiento. Suele ser la parte más grande de la compensación.", "sí"],
+    um_yes: ["Su UM paga sus lesiones", "El culpable no tiene seguro, así que su Uninsured Motorist paga en su lugar: tratamiento, salario, dolor y sufrimiento. Límite por accidente: {pa}.", "hasta {pp}"],
+    um_none: ["Sin UM", "Solo podría reclamarle al culpable personalmente. Sin seguro ni bienes, cobrar es difícil.", "—"],
+    umpd_waiver: ["Su auto: Collision sin deducible", "Repare con su Collision. El UMPD cubre el deducible de {d} si el culpable está identificado con nombre y placa.", "deducible $0"],
+    collision_only: ["Su auto: solo Collision", "Repare con su Collision; usted paga el deducible de {d}.", "menos {d}"],
+    umpd_only: ["Su auto: UMPD", "El UMPD paga la reparación hasta {u} si el culpable está identificado. Lo que pase de eso corre por su cuenta.", "hasta {u}"],
+    car_none: ["Su auto no está cubierto", "La póliza no tiene Collision ni UMPD. La reparación corre por su cuenta o hay que demandar al culpable personalmente.", "—"],
+    um_hr: ["Su UM paga sus lesiones", "El UM aplica cuando el culpable huye si hubo contacto entre los vehículos. Repórtelo a la policía en 24 horas y a su aseguradora en 30 días.", "hasta {pp}"],
+    um_none_hr: ["Sin UM", "El culpable huyó y la póliza no tiene UM, así que nadie paga las lesiones. Llámenos: revisaremos otras pólizas de su hogar.", "—"],
+    collision_hr: ["Su auto: solo Collision", "En California el UMPD no paga si el culpable huyó. Queda el Collision, con el deducible de {d} a su cargo.", "menos {d}"],
+    car_none_hr: ["Su auto no está cubierto", "La póliza no tiene Collision y el UMPD no aplica si el culpable huyó. La reparación corre por su cuenta.", "—"],
+    others_bi: ["Su póliza paga a los lesionados", "Su Bodily Injury paga hasta {pp} por persona y {pa} por accidente. Lo que supere el límite se le puede reclamar a usted personalmente.", "{pp} / {pa}"],
+    others_bi_none: ["No vemos cobertura por lesiones", "El documento no muestra Bodily Injury. Sin ella, los lesionados le reclamarían a usted personalmente. Llámenos para revisarlo.", "—"],
+    others_pd: ["Su póliza paga el auto ajeno", "El Property Damage cubre el otro auto y bienes hasta {pd}.", "hasta {pd}"],
+    own_collision: ["Su auto se repara con Collision", "Su reparación se paga menos el deducible de {d}.", "menos {d}"],
+    own_car_none: ["Su auto corre por su cuenta", "La póliza no tiene Collision, así que si la culpa es suya su propia reparación no está cubierta.", "—"],
+    own_medpay: ["Su tratamiento: MedPay", "MedPay paga la atención suya y de sus pasajeros aunque la culpa sea suya.", "hasta {m}"],
+    own_injury_none: ["Su tratamiento: seguro médico", "La póliza no tiene MedPay. Si la culpa es suya, solo su seguro médico cubre su tratamiento.", "—"],
+    passengers: ["Sus pasajeros también pueden reclamar", "Los pasajeros reclaman contra su Bodily Injury. A veces se excluye a familiares; revisaremos su póliza.", "hasta {pp}"],
+    fault: ["¿Seguro que la culpa fue suya?", "La culpa se disputa a menudo. California la reparte en porcentajes: aunque tenga parte de culpa, recibe compensación por la parte del otro conductor.", ""]
+  },
+  w_expired: "Según el documento, la póliza venció el {end}. Si no estaba vigente el día del accidente, la Prop 213 impide reclamar dolor y sufrimiento al culpable. Llámenos para revisarlo.",
+  w_below: "El límite de Bodily Injury {pp}/{pa} está por debajo del mínimo actual de California, $30,000/$60,000.",
+  w_multi: "La póliza tiene varios autos. Mostramos la cobertura del primero: {veh}."
+}
+};
+
+/* Подсказки и расшифровка declaration page. g: [название, что это, что это значит после ДТП] */
+Object.assign(T.ru, {
+  hint_q: "Какая страница нужна?",
+  hints: [
+    "Обычно это 1–2 страница полиса. Сверху написано Declarations Page или Coverage Summary.",
+    "Найти её можно в приложении страховой: Documents или Policy documents. Ещё она приходит письмом при покупке и продлении.",
+    "ID card не подойдёт: на этой карточке для полиции нет лимитов."
+  ],
+  hint_see: "Как она выглядит",
+  guide_h: "Как читать declaration page",
+  guide_sub: "Так выглядит типичная страница полиса. Нажмите на строку, чтобы узнать, что она значит и чем поможет после аварии.",
+  guide_after: "После ДТП",
+  guide_ex: "Пример, данные вымышлены",
+  what_is: "Что это",
+  g: {
+    period: ["Срок действия — Policy Period", "Даты, когда полис действует. Обычно 6 или 12 месяцев.", "Авария должна попасть в этот срок. Если полис истёк, по закону Prop 213 нельзя требовать с виновника боль и страдания."],
+    named: ["Застрахованные — Named Insured", "Владельцы полиса. Рядом бывает список водителей — Drivers.", "UM и MedPay обычно защищают и родственников, которые живут с вами, даже если их нет в полисе."],
+    vehicle: ["Машина — Vehicle и VIN", "Какие машины застрахованы. У каждой может быть свой набор покрытий.", "Смотрите покрытия той машины, которая была в аварии."],
+    lien: ["Банк — Lienholder", "Банк или лизинговая компания, если машина в кредите или лизинге.", "При полной гибели машины страховая сначала гасит долг перед банком, остаток получаете вы."],
+    bi: ["Травмы других — Bodily Injury Liability", "Платит людям, которых травмировали вы. Запись 30,000/60,000 значит: до $30,000 на одного человека и до $60,000 на всю аварию.", "Защищает вас, если виноваты вы. Если виноват другой водитель, платит уже его Bodily Injury."],
+    pd: ["Чужое имущество — Property Damage Liability", "Платит за чужую машину, забор, столб и другое имущество, которое вы повредили.", "Если ущерб больше лимита, разницу могут требовать с вас лично."],
+    um: ["Виновник без страховки — UM / UIM", "UM платит за ваши травмы, если у виновника нет страховки или он скрылся. UIM доплачивает, если страховки у виновника слишком мало.", "Одно из главных покрытий для пострадавшего. Работает и для пассажиров вашей машины."],
+    umpd: ["Машина при незастрахованном — UMPD", "Ремонт вашей машины, если у виновника нет страховки. В Калифорнии до $3,500, виновник должен быть установлен.", "Если у вас есть Collision, UMPD закрывает вашу франшизу."],
+    medpay: ["Лечение — Medical Payments", "Оплачивает лечение вас и пассажиров независимо от того, кто виноват.", "Деньги на врачей сразу, не дожидаясь окончания дела."],
+    coll: ["Своя машина при ДТП — Collision", "Ремонт вашей машины после столкновения, даже если виноваты вы. Deductible — франшиза, часть ремонта, которую платите вы.", "Машину можно починить быстро, а франшизу потом вернуть со страховки виновника."],
+    comp: ["Не столкновение — Comprehensive", "Угон, вандализм, пожар, град, удар о животное, разбитое стекло. Тоже с франшизой.", "В обычной аварии двух машин не применяется."],
+    rental: ["Аренда машины — Rental Reimbursement", "Машина напрокат, пока ваша в ремонте. Указан лимит в день и общий максимум.", "Если виноват другой, аренду должна оплатить его страховая."],
+    tow: ["Эвакуатор — Towing / Roadside", "Эвакуатор, запуск аккумулятора, замена колеса, доставка бензина.", "Сохраните чек за эвакуатор после аварии, его включают в требование."],
+    premium: ["Цена покрытия — Premium", "Сколько вы платите за каждое покрытие. Если в строке есть цена или $0.00, покрытие действует.", "Пустая строка, Rejected или Not covered — покрытия нет."]
+  }
+});
+Object.assign(T.uk, {
+  hint_q: "Яка сторінка потрібна?",
+  hints: [
+    "Зазвичай це 1–2 сторінка поліса. Зверху написано Declarations Page або Coverage Summary.",
+    "Знайти її можна в застосунку страхової: Documents або Policy documents. Ще вона приходить листом при купівлі та продовженні.",
+    "ID card не підійде: на цій картці для поліції немає лімітів."
+  ],
+  hint_see: "Як вона виглядає",
+  guide_h: "Як читати declaration page",
+  guide_sub: "Так виглядає типова сторінка поліса. Натисніть на рядок, щоб дізнатися, що він означає і чим допоможе після аварії.",
+  guide_after: "Після ДТП",
+  guide_ex: "Приклад, дані вигадані",
+  what_is: "Що це",
+  g: {
+    period: ["Термін дії — Policy Period", "Дати, коли поліс діє. Зазвичай 6 або 12 місяців.", "Аварія має потрапити в цей термін. Якщо поліс закінчився, за законом Prop 213 не можна вимагати з винуватця біль і страждання."],
+    named: ["Застраховані — Named Insured", "Власники поліса. Поруч буває список водіїв — Drivers.", "UM і MedPay зазвичай захищають і родичів, які живуть з вами, навіть якщо їх немає в полісі."],
+    vehicle: ["Авто — Vehicle і VIN", "Які авто застраховані. У кожного може бути свій набір покриттів.", "Дивіться покриття того авто, яке було в аварії."],
+    lien: ["Банк — Lienholder", "Банк або лізингова компанія, якщо авто в кредиті чи лізингу.", "При повній загибелі авто страхова спершу гасить борг перед банком, залишок отримуєте ви."],
+    bi: ["Травми інших — Bodily Injury Liability", "Платить людям, яких травмували ви. Запис 30,000/60,000 означає: до $30,000 на одну людину і до $60,000 на всю аварію.", "Захищає вас, якщо винні ви. Якщо винен інший водій, платить уже його Bodily Injury."],
+    pd: ["Чуже майно — Property Damage Liability", "Платить за чуже авто, паркан, стовп та інше майно, яке ви пошкодили.", "Якщо збиток більший за ліміт, різницю можуть вимагати з вас особисто."],
+    um: ["Винуватець без страховки — UM / UIM", "UM платить за ваші травми, якщо у винуватця немає страховки або він зник. UIM доплачує, якщо страховки у винуватця замало.", "Одне з головних покриттів для потерпілого. Працює і для пасажирів вашого авто."],
+    umpd: ["Авто при незастрахованому — UMPD", "Ремонт вашого авто, якщо у винуватця немає страховки. У Каліфорнії до $3,500, винуватця має бути встановлено.", "Якщо у вас є Collision, UMPD закриває вашу франшизу."],
+    medpay: ["Лікування — Medical Payments", "Оплачує лікування вас і пасажирів незалежно від того, хто винен.", "Гроші на лікарів одразу, не чекаючи завершення справи."],
+    coll: ["Своє авто при ДТП — Collision", "Ремонт вашого авто після зіткнення, навіть якщо винні ви. Deductible — франшиза, частина ремонту, яку платите ви.", "Авто можна полагодити швидко, а франшизу потім повернути зі страховки винуватця."],
+    comp: ["Не зіткнення — Comprehensive", "Викрадення, вандалізм, пожежа, град, удар об тварину, розбите скло. Теж із франшизою.", "У звичайній аварії двох машин не застосовується."],
+    rental: ["Оренда авто — Rental Reimbursement", "Авто напрокат, поки ваше в ремонті. Вказано ліміт на день і загальний максимум.", "Якщо винен інший, оренду має оплатити його страхова."],
+    tow: ["Евакуатор — Towing / Roadside", "Евакуатор, запуск акумулятора, заміна колеса, доставка пального.", "Збережіть чек за евакуатор після аварії, його включають у вимогу."],
+    premium: ["Ціна покриття — Premium", "Скільки ви платите за кожне покриття. Якщо в рядку є ціна або $0.00, покриття діє.", "Порожній рядок, Rejected або Not covered — покриття немає."]
+  }
+});
+Object.assign(T.en, {
+  hint_q: "Which page do I need?",
+  hints: [
+    "Usually page 1 or 2 of your policy, titled Declarations Page or Coverage Summary.",
+    "Find it in your insurer's app under Documents or Policy documents, or in the email you got when you bought or renewed.",
+    "Your ID card won't work: the card you show police doesn't list limits."
+  ],
+  hint_see: "See what it looks like",
+  guide_h: "How to read a declarations page",
+  guide_sub: "This is what a typical policy page looks like. Tap any line to see what it means and how it helps after an accident.",
+  guide_after: "After an accident",
+  guide_ex: "Sample, made-up data",
+  what_is: "What it is",
+  g: {
+    period: ["Policy Period", "The dates your policy is in force, usually 6 or 12 months.", "The accident has to fall inside these dates. If the policy had lapsed, Prop 213 bars pain-and-suffering claims against the at-fault driver."],
+    named: ["Named Insured", "The policy owners. A list of Drivers often sits next to it.", "UM and MedPay usually also protect relatives who live with you, even if they aren't listed."],
+    vehicle: ["Vehicle and VIN", "Which cars are insured. Each can have its own set of coverages.", "Look at the coverages for the car that was in the accident."],
+    lien: ["Lienholder", "The bank or leasing company, if the car is financed or leased.", "If the car is totaled, the insurer pays off the loan first and you get the rest."],
+    bi: ["Bodily Injury Liability", "Pays people you injure. 30,000/60,000 means up to $30,000 per person and $60,000 per accident.", "Protects you when you're at fault. When the other driver is at fault, their Bodily Injury pays you."],
+    pd: ["Property Damage Liability", "Pays for someone else's car, fence, pole or other property you damage.", "Damage above the limit can be claimed from you personally."],
+    um: ["Uninsured / Underinsured Motorist — UM / UIM", "UM pays for your injuries when the at-fault driver has no insurance or flees. UIM adds more when their insurance is too small.", "One of the most important coverages if you're the victim. It covers your passengers too."],
+    umpd: ["Uninsured Motorist Property Damage — UMPD", "Repairs your car when the at-fault driver has no insurance. Up to $3,500 in California, and the driver must be identified.", "If you have Collision, UMPD covers your deductible."],
+    medpay: ["Medical Payments — MedPay", "Pays medical bills for you and your passengers no matter who was at fault.", "Money for doctors right away, without waiting for the case to settle."],
+    coll: ["Collision", "Repairs your car after a crash, even if you were at fault. The deductible is the part of the repair you pay yourself.", "Get your car fixed quickly and recover the deductible from the at-fault driver's insurer later."],
+    comp: ["Comprehensive", "Theft, vandalism, fire, hail, hitting an animal, broken glass. Also has a deductible.", "Doesn't apply to an ordinary crash between two cars."],
+    rental: ["Rental Reimbursement", "A rental car while yours is in the shop, with a daily limit and a total maximum.", "If the other driver is at fault, their insurer should pay for the rental."],
+    tow: ["Towing / Roadside", "Towing, jump starts, tire changes and fuel delivery.", "Keep the tow receipt after an accident; it goes into your claim."],
+    premium: ["Premium", "What you pay for each coverage. A price or $0.00 on a line means the coverage is active.", "A blank line, Rejected or Not covered means you don't have it."]
+  }
+});
+Object.assign(T.es, {
+  hint_q: "¿Qué página necesito?",
+  hints: [
+    "Suele ser la página 1 o 2 de la póliza, con el título Declarations Page o Coverage Summary.",
+    "Está en la app de su aseguradora, en Documents o Policy documents, o en el correo que recibió al comprar o renovar.",
+    "La tarjeta ID card no sirve: la tarjeta que muestra a la policía no tiene límites."
+  ],
+  hint_see: "Ver cómo es",
+  guide_h: "Cómo leer la página de declaraciones",
+  guide_sub: "Así se ve una página típica de póliza. Toque una línea para ver qué significa y cómo le ayuda después de un accidente.",
+  guide_after: "Después del accidente",
+  guide_ex: "Ejemplo, datos inventados",
+  what_is: "Qué es",
+  g: {
+    period: ["Vigencia — Policy Period", "Las fechas en que la póliza está activa, normalmente 6 o 12 meses.", "El accidente debe caer dentro de estas fechas. Si la póliza había vencido, la Prop 213 impide reclamar dolor y sufrimiento al culpable."],
+    named: ["Asegurados — Named Insured", "Los titulares de la póliza. Cerca suele aparecer la lista de conductores, Drivers.", "UM y MedPay normalmente también protegen a los familiares que viven con usted, aunque no estén en la póliza."],
+    vehicle: ["Vehículo y VIN", "Qué autos están asegurados. Cada uno puede tener sus propias coberturas.", "Revise las coberturas del auto que estuvo en el accidente."],
+    lien: ["Acreedor — Lienholder", "El banco o la financiera, si el auto está financiado o en leasing.", "Si el auto es pérdida total, la aseguradora primero paga el préstamo y usted recibe el resto."],
+    bi: ["Lesiones a otros — Bodily Injury Liability", "Paga a las personas que usted lesiona. 30,000/60,000 significa hasta $30,000 por persona y $60,000 por accidente.", "Le protege si la culpa es suya. Si la culpa es del otro conductor, le paga el Bodily Injury de él."],
+    pd: ["Daños a bienes ajenos — Property Damage Liability", "Paga el auto, la cerca, el poste u otros bienes ajenos que usted dañe.", "Si el daño supera el límite, la diferencia se le puede reclamar a usted personalmente."],
+    um: ["Conductor sin seguro — UM / UIM", "UM paga sus lesiones si el culpable no tiene seguro o huyó. UIM agrega más si el seguro del culpable es insuficiente.", "Una de las coberturas más importantes para la víctima. También cubre a sus pasajeros."],
+    umpd: ["Su auto si el otro no tiene seguro — UMPD", "Repara su auto si el culpable no tiene seguro. Hasta $3,500 en California, y el culpable debe estar identificado.", "Si tiene Collision, el UMPD cubre su deducible."],
+    medpay: ["Gastos médicos — Medical Payments", "Paga la atención médica suya y de sus pasajeros sin importar la culpa.", "Dinero para médicos de inmediato, sin esperar a que cierre el caso."],
+    coll: ["Su auto en un choque — Collision", "Repara su auto después de un choque, aunque la culpa sea suya. El deducible es la parte que paga usted.", "Repare su auto rápido y recupere el deducible después del seguro del culpable."],
+    comp: ["Sin choque — Comprehensive", "Robo, vandalismo, incendio, granizo, golpe con un animal, vidrios rotos. También tiene deducible.", "No aplica en un choque normal entre dos autos."],
+    rental: ["Auto de renta — Rental Reimbursement", "Un auto de renta mientras el suyo está en reparación, con límite diario y máximo total.", "Si la culpa es del otro, su aseguradora debe pagar la renta."],
+    tow: ["Grúa — Towing / Roadside", "Grúa, paso de corriente, cambio de llanta y entrega de gasolina.", "Guarde el recibo de la grúa después del accidente; se incluye en su reclamo."],
+    premium: ["Prima — Premium", "Lo que paga por cada cobertura. Si la línea tiene un precio o $0.00, la cobertura está activa.", "Una línea vacía, Rejected o Not covered significa que no la tiene."]
+  }
+});
+Object.assign(T.ru, { site: "Сайт фирмы", write_me: "Напишите мне", office: "Офис" });
+Object.assign(T.uk, { site: "Сайт фірми", write_me: "Напишіть мені", office: "Офіс" });
+Object.assign(T.en, { site: "Firm website", write_me: "Message me", office: "Office" });
+Object.assign(T.es, { site: "Sitio del bufete", write_me: "Escríbame", office: "Oficina" });
+T.ru.veh = "Машина"; T.uk.veh = "Авто"; T.en.veh = "Vehicle"; T.es.veh = "Vehículo";
+
+/* Армянский (hy) */
+T.hy = {
+  call: "Զանգահարել", copy: "Պատճենել", copied: "Պատճենված է",
+  pills: ["Personal Injury", "24/7", "Կալիֆորնիա"],
+  h1: "Վթարի՞ եք ենթարկվել։ Իմացեք, թե ինչ է ձեզ հասնում ձեր ապահովագրությամբ",
+  lead: "Վերբեռնեք declaration page-ը՝ ձեր ավտոապահովագրության առաջին էջը։ Մենք կկարդանք սահմանաչափերը և ցույց կտանք, թե ինչ է ծածկում ապահովագրությունը յուրաքանչյուր դեպքում՝ մեղավոր է մյուս վարորդը, նա ապահովագրություն չունի, փախել է դեպքի վայրից, թե մեղավոր եք դուք։",
+  up_title: "Վերբեռնեք ձեր պոլիսը",
+  up_hint: "PDF կամ լուսանկար այն էջի, որտեղ նշված են Coverages և Limits։ Կարելի է մի քանի լուսանկար։",
+  up_btn: "Ընտրել ֆայլ", up_drop: "կամ քաշեք այստեղ",
+  up_privacy: "Ֆայլն օգտագործվում է միայն պոլիսը վերլուծելու համար։",
+  analyze: "Վերլուծել պոլիսը", reset: "Հեռացնել",
+  st_read: "Բացում եմ փաստաթուղթը…", st_ai: "Ճանաչում եմ սահմանաչափերն ու ծածկույթները։ Սովորաբար տևում է 20–40 վայրկյան…",
+  err_notdec: "Սա չի նմանվում ավտոապահովագրության declaration page-ի։ Վերբեռնեք այն էջը, որտեղ նշված են Coverages և Limits։",
+  err_file: "Չհաջողվեց բացել ֆայլը։ Պահպանեք այն որպես PDF կամ JPG և փորձեք նորից։",
+  err_ai: "Չհաջողվեց ճանաչել պոլիսը։ Զանգահարեք մեզ, ձեռքով կվերլուծենք 5 րոպեում։",
+  err_noai: "Ավտոմատ վերլուծությունն այժմ հասանելի չէ։ Թողեք ձեր հեռախոսահամարը ներքևում, և մենք պոլիսը ձեռքով կվերլուծենք։",
+  err_denied: "Առանց AI-ի թույլտվության պոլիսը հնարավոր չէ վերլուծել։ Թողեք հեռախոսահամարը ներքևում, ձեռքով կվերլուծենք։",
+  example_badge: "Պոլիսի օրինակ", yours_badge: "Ձեր պոլիսը",
+  example_note: "Այժմ ցուցադրված է օրինակ։ Վերբեռնեք ձեր պոլիսը՝ ձեր թվերը տեսնելու համար։",
+  policy_h: "Ինչ կա պոլիսում", limits: "Սահմանաչափեր BI / BI / PD", period: "Ժամկետ", insurer: "Ապահովագրող",
+  cov: { bi: "Ուրիշների վնասվածքներ — Bodily Injury", pd: "Ուրիշի գույք — Property Damage", um: "Մեղավորն առանց ապահովագրության — UM", uim: "Մեղավորի ապահովագրությունը քիչ է — UIM", umpd: "Մեքենան՝ չապահովագրվածի դեպքում — UMPD", medpay: "Բուժում՝ անկախ մեղքից — MedPay", coll: "Ձեր մեքենան վթարի ժամանակ — Collision", comp: "Գողություն, կարկուտ, ապակի — Comprehensive", rental: "Վարձակալված մեքենա — Rental", tow: "Էվակուատոր — Towing" },
+  none: "չկա", yes: "կա", ded: "ֆրանշիզա", pp: "մեկ անձի համար", pa: "մեկ վթարի համար", pd_short: "օրական",
+  scen_h: "Ինչ է ձեզ հասնում յուրաքանչյուր իրավիճակում",
+  tabs: { insured: "Ինձ բախվել է ապահովագրված վարորդ", uninsured: "Մեղավորը չունի ապահովագրություն", hitrun: "Մեղավորը փախել է", atfault: "Մեղավորը ես եմ" },
+  status: { ok: "Ծածկված է", part: "Մասամբ", no: "Ծածկված չէ", info: "Կարևոր է" },
+  cta_note: "Սա ուղենիշ է ձեր պոլիսի հիման վրա։ Ձեր գործի մանրամասները կպատմենք անվճար խորհրդատվության ժամանակ։",
+  cta_call: "Զանգահարել", cta_form: "Թողնել հայտ",
+  form_h: "Անվճար կվերլուծենք ձեր գործը",
+  form_sub: "Թողեք հեռախոսահամարը. այսօր կզանգահարենք, իսկ «Ինչ անել վթարից հետո» հուշագիրը կարող եք ներբեռնել անմիջապես։",
+  f_name: "Անուն", f_phone: "Հեռախոս", f_when: "Վթարի ամսաթիվը", f_inj: "Վնասվածքներ կա՞ն",
+  inj: { yes: "Այո", no: "Ոչ", unsure: "Դեռ չգիտեմ" },
+  f_scen: "Ինչ է պատահել", f_lang: "Հաղորդակցման լեզուն",
+  f_consent: "Համաձայն եմ, որ ինձ հետ կապ հաստատեն հեռախոսով կամ մեսենջերով",
+  f_submit: "Ստանալ խորհրդատվություն և հուշագիր", f_sending: "Ուղարկում եմ…",
+  f_ok_h: "Հայտն ընդունված է", f_ok: "Շուտով կզանգահարենք։ Իսկ մինչ այդ ներբեռնեք հուշագիրը՝",
+  e_name: "Նշեք անունը", e_phone: "Ստուգեք հեռախոսահամարը", e_consent: "Նշեք համաձայնությունը", e_send: "Չհաջողվեց ուղարկել։ Զանգահարեք մեզ՝ (916) 999-9090",
+  gift_tag: "Նվեր", gift_h: "Հուշագիր «Ինչ անել վթարից հետո»",
+  gift_sub: "Քայլեր, որոնք պաշտպանում են ձեր իրավունքներն ու առողջությունը վթարից հետո առաջին օրերին։",
+  gift_btn: "Ներբեռնել հուշագիրը", gift_locked: "Կբացվի հայտից հետո", gift_fail: "Չհաջողվեց ներբեռնել։ Հուշագիրը կուղարկենք մեսենջերով։",
+  why_h: "Ինչու Avagyan Law",
+  why: ["Ոչինչ չեք վճարում նախապես", "Վնասի անվճար գնահատում՝ սովորաբար ավելի բարձր, քան ապահովագրողինը", "Ապահովագրական ընկերության հետ մենք ենք խոսում", "Փոխարինող մեքենա, եթե ձերը չի աշխատում", "Գործերը վարում ենք մինչև երդվյալ ատենակալների դատարան", "Կապի մեջ ենք 24/7"],
+  manager: "Պավել Բելոգլազով, Personal Injury",
+  disc: "Attorney Advertising. Պոլիսի վերլուծությունը տեղեկատվական բնույթ ունի և իրավաբանական խորհրդատվություն չէ։ Վերջնական գումարը կախված է վթարի հանգամանքներից, վնասվածքներից և մեղավորի պոլիսից։ Փաստաբան–հաճախորդ հարաբերությունները ծագում են միայն պայմանագիր ստորագրելուց հետո։",
+  it: {
+    their_bi: ["Ձեր վնասվածքները վճարում է մեղավորի ապահովագրությունը", "Բուժումը, կորցրած վաստակը, ցավն ու տառապանքը ծածկում է մեղավորի Bodily Injury-ն՝ նրա սահմանաչափի շրջանակում։ Կալիֆորնիայում նվազագույն սահմանաչափը $30,000 է մեկ անձի համար։", "$30,000-ից"],
+    uim_yes: ["Ձեր UIM-ը կհավելավճարի մեղավորի սահմանաչափից ավել", "Եթե վնասվածքներն ավելի թանկ են, քան մեղավորի սահմանաչափը, ձեր պոլիսը վճարում է տարբերությունը՝ մինչև {uim} մեկ անձի համար՝ հանած մեղավորի վճարածը։ Մեղավորի նվազագույն պոլիսի դեպքում սա մինչև {extra} լրացուցիչ է։", "մինչև {uim}"],
+    uim_low: ["UIM կա, բայց գրեթե չի աշխատի", "Կալիֆորնիայում UIM-ը վճարում է միայն ձեր և մեղավորի սահմանաչափերի տարբերությունը։ Ձեր {uim} սահմանաչափը չի գերազանցում $30,000 նվազագույնը, ուստի հավելավճար, ամենայն հավանականությամբ, չի լինի։ Արժե բարձրացնել սահմանաչափը։", "{uim}"],
+    uim_none: ["UIM չկա", "Եթե վնասվածքներն ավելի թանկ են, քան մեղավորի սահմանաչափը, տարբերությունը պետք է պահանջել անձամբ նրանից։", "—"],
+    medpay_yes: ["MedPay-ը վճարում է բուժումն անմիջապես", "Ծածկում է ձեր և ուղևորների բուժումը՝ անկախ մեղքից, առանց գործի ավարտին սպասելու։", "մինչև {m}"],
+    medpay_none: ["MedPay չկա", "Մինչև գործի փակումը բուժումը վճարում է բժշկական ապահովագրությունը, կամ բժիշկները բուժում են՝ վճարումը ստանալով գործի ավարտին։ Այդպիսի բժիշկներին մենք ենք միացնում։", "—"],
+    car_their: ["Մեքենայի վերանորոգումն ու վարձակալությունը վճարում է մեղավորը", "Մեղավորի Property Damage-ը վճարում է վերանորոգման կամ մեքենայի շուկայական արժեքի և վերանորոգման ընթացքում վարձակալության համար։", "ըստ վնասի"],
+    collision_opt: ["Կարելի է ավելի արագ վերանորոգել ձեր Collision-ով", "Վերանորոգում ձեր Collision-ով, իսկ {d} ֆրանշիզան հետո վերադարձվում է մեղավորի ապահովագրությունից։", "ֆրանշիզա {d}"],
+    pain: ["Ցավ և տառապանք", "Քանի դեռ ձեր պոլիսը գործում է, իրավունք ունեք պահանջել փոխհատուցում ցավի և տառապանքի համար։ Սովորաբար սա վճարի ամենամեծ մասն է։", "այո"],
+    um_yes: ["Վնասվածքները վճարում է ձեր UM-ը", "Մեղավորն ապահովագրություն չունի, ուստի ձեր Uninsured Motorist-ը վճարում է նրա փոխարեն՝ բուժում, վաստակ, ցավ և տառապանք։ Ամբողջ վթարի սահմանաչափը՝ {pa}։", "մինչև {pp}"],
+    um_none: ["UM չկա", "Վնասվածքների համար կարելի է պահանջել միայն անձամբ մեղավորից։ Եթե նա չունի ապահովագրություն և գույք, գումար ստանալը դժվար է։", "—"],
+    umpd_waiver: ["Մեքենա՝ Collision առանց ֆրանշիզայի", "Վերանորոգում ձեր Collision-ով։ UMPD-ն փակում է {d} ֆրանշիզան, եթե մեղավորը հայտնի է՝ անունը և մեքենայի համարը։", "ֆրանշիզա $0"],
+    collision_only: ["Մեքենա՝ միայն Collision", "Վերանորոգում ձեր Collision-ով, {d} ֆրանշիզան վճարում եք դուք։", "հանած {d}"],
+    umpd_only: ["Մեքենա՝ UMPD", "Վերանորոգումը կվճարի UMPD-ն մինչև {u}, եթե մեղավորը հայտնի է։ Ավելին մնում է ձեզ վրա։", "մինչև {u}"],
+    car_none: ["Մեքենան ծածկված չէ", "Պոլիսում չկա ոչ Collision, ոչ UMPD։ Վերանորոգումը ձեր հաշվին է կամ մեղավորի դեմ հայցով։", "—"],
+    um_hr: ["Վնասվածքները վճարում է ձեր UM-ը", "UM-ն աշխատում է նաև, երբ մեղավորը փախել է, եթե եղել է մեքենաների շփում։ Հայտնեք ոստիկանությանը 24 ժամվա ընթացքում և ձեր ապահովագրողին՝ ոչ ուշ, քան 30 օրում։", "մինչև {pp}"],
+    um_none_hr: ["UM չկա", "Մեղավորը փախել է, իսկ պոլիսում UM չկա, ուստի վնասվածքների համար վճարող չկա։ Զանգահարեք՝ կստուգենք ընտանիքի անդամների պոլիսները։", "—"],
+    collision_hr: ["Մեքենա՝ միայն Collision", "Եթե մեղավորը փախել է, Կալիֆորնիայում UMPD-ն չի վճարում։ Մնում է Collision-ը, {d} ֆրանշիզան ձեզ վրա է։", "հանած {d}"],
+    car_none_hr: ["Մեքենան ծածկված չէ", "Պոլիսում Collision չկա, իսկ UMPD-ն փախած մեղավորի դեպքում չի աշխատում։ Վերանորոգումը ձեր հաշվին է։", "—"],
+    others_bi: ["Տուժածների վնասվածքները վճարում է ձեր պոլիսը", "Ձեր Bodily Injury-ն տուժածներին վճարում է մինչև {pp} մեկ անձի և {pa} ամբողջ վթարի համար։ Սահմանաչափից ավելին կարող են պահանջել անձամբ ձեզնից։", "{pp} / {pa}"],
+    others_bi_none: ["Վնասվածքների պատասխանատվություն չի գտնվել", "Փաստաթղթում Bodily Injury չի երևում։ Առանց դրա տուժածները փոխհատուցում կպահանջեն անձամբ ձեզնից։ Զանգահարեք, կստուգենք։", "—"],
+    others_pd: ["Ուրիշի մեքենան վճարում է ձեր պոլիսը", "Property Damage-ը ծածկում է ուրիշի մեքենան և գույքը մինչև {pd}։", "մինչև {pd}"],
+    own_collision: ["Ձեր մեքենան վերանորոգվում է Collision-ով", "Ձեր մեքենայի վերանորոգումը՝ հանած {d} ֆրանշիզան։", "հանած {d}"],
+    own_car_none: ["Ձեր մեքենան՝ ձեր հաշվին", "Պոլիսում Collision չկա, ուստի ձեր մեղքի դեպքում ձեր մեքենայի վերանորոգումը չի ծածկվում։", "—"],
+    own_medpay: ["Ձեր բուժումը՝ MedPay-ով", "MedPay-ը վճարում է ձեր և ուղևորների բուժման համար նույնիսկ ձեր մեղքի դեպքում։", "մինչև {m}"],
+    own_injury_none: ["Ձեր բուժումը՝ բժշկական ապահովագրությամբ", "Պոլիսում MedPay չկա։ Ձեր մեղքի դեպքում ձեր բուժումը ծածկում է միայն բժշկական ապահովագրությունը։", "—"],
+    passengers: ["Ձեր ուղևորները նույնպես կարող են փոխհատուցում ստանալ", "Ուղևորները փոխհատուցում են պահանջում ձեր Bodily Injury-ից։ Ընտանիքի անդամների համար լինում են բացառություններ, կստուգենք ձեր պոլիսը։", "մինչև {pp}"],
+    fault: ["Համոզվա՞ծ եք, որ մեղավորը դուք եք", "Մեղքը հաճախ վիճարկվում է։ Կալիֆորնիայում այն բաժանվում է տոկոսներով. նույնիսկ մասնակի մեղքի դեպքում դուք փոխհատուցում եք ստանում մյուս վարորդի բաժնի համար։", ""]
+  },
+  w_expired: "Փաստաթղթի համաձայն՝ պոլիսի ժամկետն ավարտվել է {end}։ Եթե վթարի օրը պոլիսը չէր գործում, Prop 213 օրենքով չի կարելի մեղավորից պահանջել ցավի և տառապանքի փոխհատուցում։ Զանգահարեք, կստուգենք։",
+  w_below: "Bodily Injury սահմանաչափը {pp}/{pa} ցածր է Կալիֆորնիայի գործող նվազագույնից՝ $30,000/$60,000։",
+  w_multi: "Պոլիսում մի քանի մեքենա կա։ Ցուցադրված են առաջինի ծածկույթները՝ {veh}։",
+  hint_q: "Ո՞ր էջն է պետք",
+  hints: [
+    "Սովորաբար պոլիսի 1–2-րդ էջն է, վերևում գրված է Declarations Page կամ Coverage Summary։",
+    "Կարող եք գտնել ապահովագրողի հավելվածում՝ Documents կամ Policy documents բաժնում։ Այն նաև գալիս է նամակով՝ գնելիս և երկարացնելիս։",
+    "ID card-ը չի համապատասխանում. ոստիկանության համար նախատեսված այդ քարտում սահմանաչափեր չկան։"
+  ],
+  hint_see: "Ինչպես է այն երևում",
+  guide_h: "Ինչպես կարդալ declaration page-ը",
+  guide_sub: "Այսպես է երևում պոլիսի տիպիկ էջը։ Սեղմեք տողի վրա՝ իմանալու, թե ինչ է այն նշանակում և ինչով կօգնի վթարից հետո։",
+  guide_after: "Վթարից հետո", guide_ex: "Օրինակ, տվյալները հորինված են", what_is: "Ինչ է սա",
+  g: {
+    period: ["Գործողության ժամկետ — Policy Period", "Ամսաթվերը, երբ պոլիսը գործում է։ Սովորաբար 6 կամ 12 ամիս։", "Վթարը պետք է ընկնի այս ժամկետի մեջ։ Եթե պոլիսը լրացել էր, Prop 213 օրենքով չի կարելի մեղավորից պահանջել ցավի և տառապանքի փոխհատուցում։"],
+    named: ["Ապահովագրվածներ — Named Insured", "Պոլիսի սեփականատերերը։ Կողքին երբեմն լինում է վարորդների ցանկը՝ Drivers։", "UM-ը և MedPay-ը սովորաբար պաշտպանում են նաև ձեզ հետ ապրող հարազատներին, նույնիսկ եթե նրանք պոլիսում չեն։"],
+    vehicle: ["Մեքենա — Vehicle և VIN", "Որ մեքենաներն են ապահովագրված։ Յուրաքանչյուրը կարող է ունենալ ծածկույթների իր հավաքածուն։", "Նայեք այն մեքենայի ծածկույթները, որը եղել է վթարի մեջ։"],
+    lien: ["Բանկ — Lienholder", "Բանկ կամ լիզինգային ընկերություն, եթե մեքենան վարկով կամ լիզինգով է։", "Մեքենայի լրիվ ոչնչացման դեպքում ապահովագրողը նախ մարում է բանկի պարտքը, մնացածը ստանում եք դուք։"],
+    bi: ["Ուրիշների վնասվածքներ — Bodily Injury Liability", "Վճարում է այն մարդկանց, ում դուք վնասվածք եք պատճառել։ 30,000/60,000 գրառումը նշանակում է՝ մինչև $30,000 մեկ անձի և մինչև $60,000 ամբողջ վթարի համար։", "Պաշտպանում է ձեզ, եթե մեղավորը դուք եք։ Եթե մեղավոր է մյուս վարորդը, վճարում է արդեն նրա Bodily Injury-ն։"],
+    pd: ["Ուրիշի գույք — Property Damage Liability", "Վճարում է ուրիշի մեքենայի, ցանկապատի, սյան և այլ գույքի համար, որը դուք վնասել եք։", "Եթե վնասը սահմանաչափից ավելի է, տարբերությունը կարող են պահանջել անձամբ ձեզնից։"],
+    um: ["Մեղավորն առանց ապահովագրության — UM / UIM", "UM-ը վճարում է ձեր վնասվածքների համար, եթե մեղավորն ապահովագրություն չունի կամ փախել է։ UIM-ը հավելավճարում է, եթե մեղավորի ապահովագրությունը չափազանց քիչ է։", "Տուժածի համար ամենակարևոր ծածկույթներից մեկը։ Գործում է նաև ձեր մեքենայի ուղևորների համար։"],
+    umpd: ["Մեքենան՝ չապահովագրվածի դեպքում — UMPD", "Ձեր մեքենայի վերանորոգում, եթե մեղավորն ապահովագրություն չունի։ Կալիֆորնիայում մինչև $3,500, մեղավորը պետք է հայտնի լինի։", "Եթե ունեք Collision, UMPD-ն փակում է ձեր ֆրանշիզան։"],
+    medpay: ["Բուժում — Medical Payments", "Վճարում է ձեր և ուղևորների բուժման համար՝ անկախ նրանից, թե ով է մեղավոր։", "Գումար բժիշկների համար անմիջապես, առանց գործի ավարտին սպասելու։"],
+    coll: ["Ձեր մեքենան վթարի ժամանակ — Collision", "Ձեր մեքենայի վերանորոգում բախումից հետո, նույնիսկ եթե մեղավորը դուք եք։ Deductible-ը ֆրանշիզան է՝ վերանորոգման այն մասը, որը վճարում եք դուք։", "Մեքենան կարելի է արագ վերանորոգել, իսկ ֆրանշիզան հետո վերադարձնել մեղավորի ապահովագրությունից։"],
+    comp: ["Ոչ բախում — Comprehensive", "Գողություն, վանդալիզմ, հրդեհ, կարկուտ, կենդանու հետ բախում, կոտրված ապակի։ Նույնպես ֆրանշիզայով։", "Երկու մեքենաների սովորական վթարի դեպքում չի կիրառվում։"],
+    rental: ["Վարձակալված մեքենա — Rental Reimbursement", "Վարձակալված մեքենա, մինչ ձերը վերանորոգման մեջ է։ Նշված է օրական սահմանաչափը և ընդհանուր առավելագույնը։", "Եթե մեղավոր է մյուսը, վարձակալությունը պետք է վճարի նրա ապահովագրողը։"],
+    tow: ["Էվակուատոր — Towing / Roadside", "Էվակուատոր, մարտկոցի գործարկում, անվի փոխարինում, վառելիքի առաքում։", "Պահեք էվակուատորի կտրոնը վթարից հետո, այն ներառվում է պահանջի մեջ։"],
+    premium: ["Ծածկույթի գինը — Premium", "Որքան եք վճարում յուրաքանչյուր ծածկույթի համար։ Եթե տողում կա գին կամ $0.00, ծածկույթը գործում է։", "Դատարկ տող, Rejected կամ Not covered նշանակում է, որ ծածկույթ չկա։"]
+  },
+  site: "Ֆիրմայի կայքը", write_me: "Գրեք ինձ", office: "Գրասենյակ", veh: "Մեքենա"
+};
+
+const EXTRACT_PROMPT = `You are reading images of a US personal auto insurance policy document (ideally the Declarations Page). Extract the coverage limits exactly as printed. Do not guess: use null for anything not shown.
+
+Return ONLY one JSON object, no prose, with these keys:
+{
+ "is_dec_page": true|false,        // false if these images are not an auto policy declarations/coverage page
+ "insurer": string|null,           // company name
+ "period_start": "YYYY-MM-DD"|null,
+ "period_end": "YYYY-MM-DD"|null,
+ "vehicles": [string],             // e.g. "2022 Kia EV6"; no VINs
+ "bi_pp": number|null, "bi_pa": number|null,     // Bodily Injury liability each person / each accident (occurrence)
+ "pd": number|null,                              // Property Damage liability
+ "um_pp": number|null, "um_pa": number|null,     // Uninsured Motorist bodily injury
+ "uim_pp": number|null, "uim_pa": number|null,   // Underinsured Motorist bodily injury
+ "umpd": number|null,                            // Uninsured Motorist Property Damage limit
+ "medpay": number|null,                          // Medical Payments per person
+ "collision": true|false, "collision_ded": number|null,
+ "comprehensive": true|false, "comprehensive_ded": number|null,
+ "rental": true|false, "rental_day": number|null, "rental_max": number|null,
+ "towing": true|false                            // towing / emergency road service
+}
+
+Rules:
+- Dollar amounts as plain numbers (50000, not "$50,000"). "50/100/25" in thousands means bi_pp 50000, bi_pa 100000, pd 25000.
+- A combined "Uninsured & Underinsured Motorists" line fills both um_* and uim_* with the same numbers.
+- A Combined Single Limit (CSL) fills bi_pp, bi_pa and pd with that one number.
+- A coverage counts only if the document shows a limit, deductible or premium for it (a coverage marked "not covered", "rejected", "N/A" or with no premium is absent: null / false).
+- If several vehicles have different coverages, use vehicle 1.
+- Never include names, addresses, policy numbers, emails or VINs.`;
+
+
+/* ---------- состояние ---------- */
+const EXAMPLE = { insurer:"Sample Insurance Co.", period_start:"2026-05-21", period_end:null, vehicles:["2021 Toyota Camry"],
+  bi_pp:30000, bi_pa:60000, pd:15000, um_pp:30000, um_pa:60000, uim_pp:30000, uim_pa:60000, umpd:3500, medpay:5000,
+  collision:true, collision_ded:500, comprehensive:true, comprehensive_ded:500, rental:true, rental_day:30, rental_max:900, towing:true };
+const S = { lang:"ru", cov:EXAMPLE, isExample:true, scen:"insured", files:[], leadSent:false, busy:false, busyLead:false, g:"bi", gOpen:true };
+const $ = id => document.getElementById(id);
+const money = n => n == null ? "" : "$" + Math.round(n).toLocaleString("en-US");
+const kshort = n => n == null ? "—" : (n >= 1000 ? String(+(n/1000).toFixed(1)).replace(/\.0$/,"") : String(n));
+const fill = (s, p) => s.replace(/\{(\w+)\}/g, (_, k) => p[k] ?? "");
+const has = v => typeof v === "number" && v > 0;
+const L = () => T[S.lang];
+const esc = s => String(s ?? "").replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+const smooth = () => matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+function lsGet(k){ try { return localStorage.getItem(k) } catch(e){ return null } }
+function lsSet(k,v){ try { localStorage.setItem(k,v) } catch(e){} }
+
+/* ---------- правила сценариев (Калифорния) ---------- */
+const CA_MIN_BI = 30000;
+function buildScenario(c, scen){
+  const P = { pp:money(c.um_pp), pa:money(c.um_pa), m:money(c.medpay), d:money(c.collision_ded), u:money(c.umpd), pd:money(c.pd) };
+  const out = [], add = (key, st, extra) => out.push({ key, st, p:Object.assign({}, P, extra || {}) });
+  const uimPP = c.uim_pp ?? c.um_pp;
+  const hasColl = c.collision === true || c.collision_ded != null;
+  const medpay = () => has(c.medpay) ? add("medpay_yes","ok") : add("medpay_none","no");
+  if (scen === "insured"){
+    add("their_bi","ok");
+    if (has(uimPP) && uimPP > CA_MIN_BI) add("uim_yes","ok",{ uim:money(uimPP), extra:money(uimPP - CA_MIN_BI) });
+    else if (has(uimPP)) add("uim_low","part",{ uim:money(uimPP) });
+    else add("uim_none","no");
+    medpay(); add("car_their","ok"); if (hasColl) add("collision_opt","ok"); add("pain","ok");
+  } else if (scen === "uninsured"){
+    has(c.um_pp) ? add("um_yes","ok") : add("um_none","no");
+    medpay();
+    if (hasColl && has(c.umpd)) add("umpd_waiver","ok");
+    else if (hasColl) add("collision_only","part");
+    else if (has(c.umpd)) add("umpd_only","part");
+    else add("car_none","no");
+  } else if (scen === "hitrun"){
+    has(c.um_pp) ? add("um_hr","ok") : add("um_none_hr","no");
+    medpay(); hasColl ? add("collision_hr","part") : add("car_none_hr","no");
+  } else {
+    if (has(c.bi_pp)) add("others_bi","ok",{ pp:money(c.bi_pp), pa:money(c.bi_pa || c.bi_pp) }); else add("others_bi_none","no");
+    if (has(c.pd)) add("others_pd","ok");
+    hasColl ? add("own_collision","part") : add("own_car_none","no");
+    has(c.medpay) ? add("own_medpay","ok") : add("own_injury_none","no");
+    if (has(c.bi_pp)) add("passengers","ok",{ pp:money(c.bi_pp) });
+    add("fault","info");
+  }
+  return out;
+}
+function warnings(c){
+  const w = [], t = L();
+  if (c.period_end){ const end = new Date(c.period_end + "T23:59:59"); if (!isNaN(end) && end < new Date()) w.push(fill(t.w_expired,{ end:end.toLocaleDateString({ uk:"uk-UA", hy:"hy-AM" }[S.lang] || S.lang) })); }
+  if (has(c.bi_pp) && (c.bi_pp < 30000 || (c.bi_pa && c.bi_pa < 60000))) w.push(fill(t.w_below,{ pp:money(c.bi_pp), pa:money(c.bi_pa) }));
+  if (c.vehicles && c.vehicles.length > 1) w.push(fill(t.w_multi,{ veh:c.vehicles[0] }));
+  return w;
+}
+
+/* ---------- образец declaration page ---------- */
+const DOC = {
+  meta: [ ["period","Policy Period","05/21/2026 – 11/21/2026"], ["named","Named Insured","Ivan Sample"], ["vehicle","Vehicle 1","2021 Toyota Camry, VIN …4417"], ["lien","Lienholder","Toyota Financial Services"] ],
+  cov: [ ["bi","Bodily Injury Liability","$30,000 / $60,000","$212.40"], ["pd","Property Damage Liability","$15,000","$148.10"],
+    ["um","Uninsured / Underinsured Motorists","$30,000 / $60,000","$61.00"], ["umpd","Uninsured Motorists Property Damage","$3,500","$9.70"],
+    ["medpay","Medical Payments","$5,000","$22.30"], ["coll","Collision","$500 Ded","$301.20"], ["comp","Comprehensive","$500 Ded","$88.60"],
+    ["rental","Rental Reimbursement","$30/day, $900 max","$18.00"], ["tow","Towing & Roadside","Included","$12.00"], ["premium","Total 6-Month Premium","","$873.30"] ]
+};
+const GKEYS = [...DOC.meta, ...DOC.cov].map(r => r[0]);
+function expHTML(k){
+  const t = L(), [, what, after] = t.g[k];
+  return `<div class="exp"><div><span class="lbl">${esc(t.what_is)}</span><p>${esc(what)}</p></div><div class="after"><span class="lbl">${esc(t.guide_after)}</span><p>${esc(after)}</p></div></div>`;
+}
+function rowHTML(r, i, isCov){
+  const [k, name, val, prem] = r, on = S.gOpen && S.g === k, t = L();
+  return `<button type="button" class="row" data-g="${k}" aria-expanded="${on}" title="${esc(t.g[k][0])}"><span class="num">${i+1}</span><span class="k">${esc(name)}</span><span class="v">${esc(val || "")}</span>${isCov ? `<span class="pr">${esc(prem)}</span>` : ""}</button><div class="inline-exp">${on ? expHTML(k) : ""}</div>`;
+}
+function renderDoc(){
+  const n0 = DOC.meta.length;
+  $("doc").innerHTML =
+    `<div class="d-head"><div class="ins">Sample Insurance Co.<small>P.O. Box 0000, Sacramento, CA</small></div><div class="ttl">Declarations Page<small>Policy Number: 0000-00-00-00</small></div></div>` +
+    `<div class="d-meta">${DOC.meta.map((r,i) => `<div>${rowHTML(r,i,false)}</div>`).join("")}</div>` +
+    `<div class="d-cov"><div class="hd">Coverages</div><div class="hd">Limits / Deductibles</div><div class="hd">Premium</div>${DOC.cov.map((r,i) => rowHTML(r, n0+i, true)).join("")}</div>`;
+  renderPanel();
+}
+function renderPanel(){
+  const t = L(), i = GKEYS.indexOf(S.g), [h] = t.g[S.g];
+  $("panel").innerHTML = `<div class="pn"><span class="num">${i+1}</span><h3>${esc(h)}</h3></div>${expHTML(S.g)}
+    <ul class="gidx">${GKEYS.map((k,j) => `<li><button type="button" data-gi="${k}" aria-current="${k===S.g}" title="${esc(t.g[k][0])}" aria-label="${esc(t.g[k][0])}">${j+1}</button></li>`).join("")}</ul>
+    <div class="panel-nav"><button type="button" class="btn btn-line" data-gstep="-1" aria-label="Previous" ${i===0?"disabled":""}>←</button><button type="button" class="btn btn-line" data-gstep="1" aria-label="Next" ${i===GKEYS.length-1?"disabled":""}>→</button></div>`;
+}
+
+/* ---------- отрисовка ---------- */
+function renderStatic(){
+  const t = L();
+  document.documentElement.lang = S.lang;
+  document.querySelectorAll("[data-t]").forEach(el => { const v = t[el.dataset.t]; if (typeof v === "string") el.textContent = v; });
+  document.querySelectorAll(".langs button").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === S.lang));
+  $("pills").innerHTML = t.pills.map(p => `<span class="pill">${esc(p)}</span>`).join("");
+  $("hints").innerHTML = t.hints.map(h => `<li>${esc(h)}</li>`).join("");
+  $("why").innerHTML = t.why.map(x => `<li>${esc(x)}</li>`).join("");
+  $("tabs").innerHTML = Object.entries(t.tabs).map(([k,v]) => `<button class="tab" role="tab" type="button" data-s="${k}" aria-selected="${k===S.scen}">${esc(v)}</button>`).join("");
+  const scenVal = (document.querySelector('input[name="scen"]:checked') || {}).value || S.scen;
+  $("fscen").innerHTML = Object.entries(t.tabs).map(([k,v]) => `<label><input type="radio" name="scen" value="${k}" ${k===scenVal?"checked":""}><span>${esc(v)}</span></label>`).join("");
+  const injVal = (document.querySelector('input[name="inj"]:checked') || {}).value;
+  $("finj").innerHTML = Object.entries(t.inj).map(([k,v]) => `<label><input type="radio" name="inj" value="${k}" ${k===injVal?"checked":""}><span>${esc(v)}</span></label>`).join("");
+  if (!S.leadSent) $("flang").value = S.lang;
+  $("fsubmit").textContent = S.busyLead ? t.f_sending : t.f_submit;
+  $("giftimg").src = (CONFIG.GIFT[S.lang] || "").includes("-en") ? "gift-en.jpg" : "gift-ru.jpg";
+  $("giftlock").hidden = S.leadSent; $("giftbtn").disabled = !S.leadSent;
+  renderDoc(); renderPolicy(); renderScenario(); renderFiles();
+}
+function renderPolicy(){
+  const t = L(), c = S.cov;
+  $("pbadge").className = "badge " + (S.isExample ? "ex" : "mine");
+  $("pbadge").textContent = S.isExample ? t.example_badge : t.yours_badge;
+  $("exnote").hidden = !S.isExample;
+  $("split").textContent = has(c.bi_pp) ? `${kshort(c.bi_pp)}/${kshort(c.bi_pa||c.bi_pp)}/${kshort(c.pd)}` : "—";
+  $("splitkey").innerHTML = [t.pp, t.pa, "PD"].map(x => `<span>${esc(x)}</span>`).join("");
+  const per = [
+    [t.insurer, c.insurer || "—"],
+    [t.period, [c.period_start, c.period_end].filter(Boolean).join(" → ") || "—"],
+    [t.veh, (c.vehicles && c.vehicles.length) ? c.vehicles.join(", ") : "—"]
+  ];
+  $("tk").innerHTML = per.map(([a,b]) => `<div><dt>${esc(a)}</dt><dd>${esc(b)}</dd></div>`).join("");
+  const pair = (a,b) => has(a) ? money(a) + (has(b) && b !== a ? " / " + money(b) : "") : null;
+  const ded = d => d == null ? null : t.ded + " " + money(d);
+  const rows = [
+    ["bi","bi",pair(c.bi_pp,c.bi_pa)], ["pd","pd",has(c.pd)?money(c.pd):null],
+    ["um","um",pair(c.um_pp,c.um_pa)], ["uim","um",pair(c.uim_pp ?? c.um_pp, c.uim_pa ?? c.um_pa)],
+    ["umpd","umpd",has(c.umpd)?money(c.umpd):null], ["medpay","medpay",has(c.medpay)?money(c.medpay):null],
+    ["coll","coll",c.collision ? (ded(c.collision_ded) || t.yes) : null], ["comp","comp",c.comprehensive ? (ded(c.comprehensive_ded) || t.yes) : null],
+    ["rental","rental",has(c.rental_day) ? money(c.rental_day)+" "+t.pd_short+(has(c.rental_max)?" · "+money(c.rental_max):"") : (c.rental ? t.yes : null)],
+    ["tow","tow",c.towing ? t.yes : null]
+  ];
+  $("cov").innerHTML = rows.map(([k,g,v]) => `<div class="cov-row"><span class="n"><span>${esc(t.cov[k])}</span><button type="button" class="q" data-goto="${g}" aria-label="${esc(t.what_is)}: ${esc(t.cov[k])}">?</button></span><span class="v ${v?"":"none"}">${esc(v || t.none)}</span></div>`).join("");
+  $("warns").innerHTML = warnings(c).map(w => `<div class="warn"><b aria-hidden="true">!</b><span>${esc(w)}</span></div>`).join("");
+}
+function renderScenario(){
+  const t = L();
+  $("items").innerHTML = buildScenario(S.cov, S.scen).map(({ key, st, p }) => {
+    const [h, b, a] = t.it[key];
+    return `<article class="item ${st}"><span class="st ${st}">${esc(t.status[st])}</span><h3>${esc(fill(h,p))}</h3><span class="amt">${esc(fill(a,p))}</span><p>${esc(fill(b,p))}</p></article>`;
+  }).join("");
+}
+
+/* ---------- файлы ---------- */
+function setStatus(kind, text){
+  const el = $("status");
+  if (!kind){ el.hidden = true; return; }
+  el.hidden = false; el.className = "status " + kind;
+  el.innerHTML = (kind === "busy" ? '<span class="spin" aria-hidden="true"></span>' : "") + `<span>${esc(text)}</span>`;
+}
+function renderFiles(){
+  $("files").innerHTML = S.files.map((f,i) => `<span class="chip"><span>${esc(f.name)}</span><button type="button" data-rm="${i}" aria-label="${esc(L().reset)}">×</button></span>`).join("");
+  $("go").disabled = !S.files.length || S.busy;
+}
+function addFiles(list){
+  for (const f of list) if (/pdf|image/.test(f.type) || /\.(pdf|jpe?g|png|heic|webp)$/i.test(f.name)) S.files.push(f);
+  S.files = S.files.slice(0, 4); setStatus(null); renderFiles();
+}
+const toJpeg = cv => new Promise(r => cv.toBlob(r, "image/jpeg", 0.86));
+async function pdfToImages(file){
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise, out = [];
+  for (let i = 1; i <= Math.min(pdf.numPages, 3); i++){
+    const page = await pdf.getPage(i), v0 = page.getViewport({ scale:1 });
+    const vp = page.getViewport({ scale: Math.min(2.2, 1700 / Math.max(v0.width, v0.height)) });
+    const cv = document.createElement("canvas"); cv.width = vp.width; cv.height = vp.height;
+    const ctx = cv.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0,0,cv.width,cv.height);
+    await page.render({ canvasContext:ctx, viewport:vp }).promise; out.push(await toJpeg(cv));
+  }
+  return out;
+}
+async function imageToJpeg(file){
+  const bmp = await createImageBitmap(file), k = Math.min(1, 1800 / Math.max(bmp.width, bmp.height));
+  const cv = document.createElement("canvas"); cv.width = Math.round(bmp.width*k); cv.height = Math.round(bmp.height*k);
+  const ctx = cv.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0,0,cv.width,cv.height); ctx.drawImage(bmp,0,0,cv.width,cv.height);
+  return toJpeg(cv);
+}
+const blobToB64 = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1]); r.onerror = rej; r.readAsDataURL(b); });
+
+/* ---------- AI ---------- */
+const useApi = () => CONFIG.API_URL && !CONFIG.API_URL.startsWith("%%");
+const cap = name => (window.claude && window.claude.use) ? window.claude.use(name).catch(() => null) : Promise.resolve(null);
+const CAPS = useApi() ? {} : { sample:cap("sample"), db:cap("db"), user:cap("user"), downloads:cap("downloads") };
+const parseJSON = text => { const m = String(text).match(/\{[\s\S]*\}/); return m ? JSON.parse(m[0]) : null; };
+async function api(payload){
+  const r = await fetch(CONFIG.API_URL, { method:"POST", headers:{ "Content-Type":"text/plain;charset=utf-8" }, body:JSON.stringify(payload) });
+  const j = await r.json(); if (!j.ok) throw { code:"api" }; return j;
+}
+async function extract(images){
+  if (useApi()) return (await api({ action:"analyze", images: await Promise.all(images.map(blobToB64)) })).data;
+  const sample = await CAPS.sample; if (!sample) throw { code:"noai" };
+  const lim = await sample.limits().catch(() => null), max = lim && lim.images ? lim.images.maxCount : 4;
+  const { text } = await sample(EXTRACT_PROMPT, { images:images.slice(0, max), modelTier:"default" });
+  return parseJSON(text);
+}
+function normalize(d){
+  const n = v => (v === null || v === undefined || v === "" || isNaN(Number(v))) ? null : Number(v), c = {};
+  ["bi_pp","bi_pa","pd","um_pp","um_pa","uim_pp","uim_pa","umpd","medpay","collision_ded","comprehensive_ded","rental_day","rental_max"].forEach(k => c[k] = n(d[k]));
+  c.collision = d.collision === true || c.collision_ded != null;
+  c.comprehensive = d.comprehensive === true || c.comprehensive_ded != null;
+  c.rental = !!d.rental || has(c.rental_day); c.towing = !!d.towing;
+  c.insurer = d.insurer || ""; c.period_start = d.period_start || null; c.period_end = d.period_end || null;
+  c.vehicles = Array.isArray(d.vehicles) ? d.vehicles.filter(Boolean).slice(0, 6) : [];
+  return c;
+}
+async function analyze(){
+  if (S.busy || !S.files.length) return;
+  S.busy = true; renderFiles();
+  try {
+    setStatus("busy", L().st_read);
+    let images = [];
+    try { for (const f of S.files) images = images.concat(/pdf/.test(f.type) || /\.pdf$/i.test(f.name) ? await pdfToImages(f) : [await imageToJpeg(f)]); }
+    catch (e){ throw { code:"file" }; }
+    images = images.filter(Boolean).slice(0, 4);
+    if (!images.length) throw { code:"file" };
+    setStatus("busy", L().st_ai);
+    const d = await extract(images);
+    if (!d) throw { code:"ai" };
+    if (d.is_dec_page === false) throw { code:"notdec" };
+    S.cov = normalize(d); S.isExample = false;
+    setStatus(null); renderPolicy(); renderScenario();
+    $("policy").scrollIntoView({ behavior:smooth() });
+  } catch (e){
+    const map = { file:"err_file", notdec:"err_notdec", noai:"err_noai", not_granted:"err_denied" };
+    setStatus("err", L()[map[e && e.code] || "err_ai"]);
+  } finally { S.busy = false; renderFiles(); }
+}
+
+/* ---------- заявка и подарок ---------- */
+async function saveLead(lead){
+  if (useApi()) return api({ action:"lead", lead });
+  const db = await CAPS.db, user = await CAPS.user;
+  if (!db || !user) throw new Error("nodb");
+  await db.collection("leads/" + (await user.id()) + "/items").add(lead);
+}
+async function submitLead(ev){
+  ev.preventDefault();
+  const t = L(), err = $("ferr"); err.textContent = "";
+  const name = $("fname").value.trim(), phone = $("fphone").value.trim(), digits = phone.replace(/\D/g, "");
+  if (!name){ err.textContent = t.e_name; $("fname").focus(); return; }
+  if (digits.length < 10 || digits.length > 15){ err.textContent = t.e_phone; $("fphone").focus(); return; }
+  if (!$("fconsent").checked){ err.textContent = t.e_consent; $("fconsent").focus(); return; }
+  const c = S.cov;
+  const lead = { name, phone, lang:$("flang").value,
+    scenario:(document.querySelector('input[name="scen"]:checked') || {}).value || S.scen,
+    injured:(document.querySelector('input[name="inj"]:checked') || {}).value || "",
+    accident_date:$("fdate").value || "",
+    policy: S.isExample ? null : { insurer:c.insurer, period_end:c.period_end, bi:[c.bi_pp,c.bi_pa], pd:c.pd, um:[c.um_pp,c.um_pa], uim:[c.uim_pp,c.uim_pa], umpd:c.umpd, medpay:c.medpay, collision_ded:c.collision_ded, vehicles:c.vehicles },
+    page_lang:S.lang, created:new Date().toISOString(), source:"policy-check" };
+  S.busyLead = true; $("fsubmit").disabled = true; $("fsubmit").textContent = t.f_sending;
+  try {
+    await saveLead(lead);
+    S.leadSent = true; $("form").hidden = true; $("okbox").hidden = false;
+    $("giftlock").hidden = true; $("giftbtn").disabled = false; $("giftbtn").focus();
+  } catch (e){ err.textContent = t.e_send; }
+  finally { S.busyLead = false; $("fsubmit").disabled = false; $("fsubmit").textContent = L().f_submit; }
+}
+async function downloadGift(){
+  const t = L(), file = CONFIG.GIFT[S.lang] || CONFIG.GIFT.ru, name = "Avagyan_Law_" + file;
+  $("giftmsg").textContent = "";
+  try {
+    if (window.claude && !useApi()){
+      const dl = await CAPS.downloads; if (!dl) throw 0;
+      await dl.save({ filename:name, data: await (await fetch(file)).blob() });
+    } else { const a = document.createElement("a"); a.href = file; a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+  } catch (e){ if (!e || e.code !== "cancelled") $("giftmsg").textContent = t.gift_fail; }
+}
+
+/* ---------- события ---------- */
+function selectG(k, scroll){
+  const mobile = matchMedia("(max-width:960px)").matches;
+  if (mobile && S.g === k && S.gOpen && !scroll){ S.gOpen = false; } else { S.g = k; S.gOpen = true; }
+  renderDoc();
+  const r = document.querySelector(`.row[data-g="${k}"]`);
+  if (r){ r.focus({ preventScroll:true }); if (scroll) r.scrollIntoView({ behavior:smooth(), block:"center" }); }
+}
+document.addEventListener("click", e => {
+  const lb = e.target.closest("[data-lang]"); if (lb){ S.lang = lb.dataset.lang; lsSet("pc_lang", S.lang); if (!S.busy) setStatus(null); renderStatic(); return; }
+  const row = e.target.closest(".row"); if (row){ selectG(row.dataset.g, false); return; }
+  const gi = e.target.closest("[data-gi]"); if (gi){ S.g = gi.dataset.gi; S.gOpen = true; renderDoc(); const nb = document.querySelector(`[data-gi="${S.g}"]`); if (nb) nb.focus(); return; }
+  const st = e.target.closest("[data-gstep]"); if (st){ const i = GKEYS.indexOf(S.g) + Number(st.dataset.gstep); if (GKEYS[i]){ S.g = GKEYS[i]; S.gOpen = true; renderDoc(); } return; }
+  const go = e.target.closest("[data-goto]"); if (go){ selectG(go.dataset.goto, true); return; }
+  const tb = e.target.closest(".tab"); if (tb){ S.scen = tb.dataset.s; document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", b === tb)); const r = document.querySelector(`input[name="scen"][value="${S.scen}"]`); if (r) r.checked = true; renderScenario(); return; }
+  const rm = e.target.closest("[data-rm]"); if (rm){ S.files.splice(+rm.dataset.rm, 1); renderFiles(); return; }
+  const cp = e.target.closest("[data-copy]"); if (cp){ const v = cp.dataset.copy; (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => { cp.textContent = L().copied; setTimeout(() => cp.textContent = L().copy, 1500); }).catch(() => {}); }
+});
+$("file").addEventListener("change", e => { addFiles(e.target.files); e.target.value = ""; });
+const drop = $("drop");
+["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => addFiles(e.dataTransfer.files));
+$("go").addEventListener("click", analyze);
+$("form").addEventListener("submit", submitLead);
+$("giftbtn").addEventListener("click", downloadGift);
+
+(function(){
+  const saved = lsGet("pc_lang"), nav = (navigator.language || "ru").slice(0,2).toLowerCase(), h = (location.hash || "").slice(1);
+  S.lang = T[h] ? h : T[saved] ? saved : T[nav] ? nav : "ru";
+  if (matchMedia("(max-width:960px)").matches) S.gOpen = false;
+  renderStatic();
+})();
+</script>
+</body></html>
